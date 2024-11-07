@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>Request Service</h2>
+<form [formGroup]="requestServiceForm" (ngSubmit)="onSubmit()" mat-dialog-content>
+  <mat-form-field appearance="fill">
+    <mat-label>Service Name</mat-label>
+    <input matInput formControlName="service_name" placeholder="Enter service name">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Category</mat-label>
+    <input matInput formControlName="category" readonly>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Description</mat-label>
+    <input matInput formControlName="description">
+  </mat-form-field>
+
+  
+  <mat-form-field appearance="fill">
+    <mat-label>Scheduled Date</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="scheduled_date" required>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  
+  <mat-form-field appearance="fill">
+    <mat-label>Scheduled Time</mat-label>
+    <input matInput type="time" formControlName="scheduled_time" required>
+  </mat-form-field>
+
+  <div mat-dialog-actions>
+    <button mat-button color="primary" [disabled]="requestServiceForm.invalid">Request</button>
+    <button mat-button (click)="onCancel()">Cancel</button>
+  </div>
+</form>

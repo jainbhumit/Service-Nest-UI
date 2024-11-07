@@ -1,0 +1,75 @@
+<div class="services-container">
+  <p-toast/>
+  <header class="services-header">
+    <h1>SERVICE NEST</h1>
+    <button class="back-btn" (click)="onBack()">←</button>
+  </header>
+
+  <div class="view-request">
+    <h2>View Request</h2>
+    <div class="filter-container">
+      <label for="statusFilter">Filter by Status:</label>
+      <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="onStatusChange()">
+        <option value="">All</option>
+        <option value="Pending">Pending</option>
+        <option value="Accepted">Accepted</option>
+        <option value="Cancelled">Cancelled</option>
+        <option value="Approved">Approved</option>
+      </select>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>REQUEST ID</th>
+            <th>SERVICE ID</th>
+            <th>SERVICE NAME</th>
+            <th>REQUESTED TIME</th>
+            <th>SCHEDULE TIME</th>
+            <th>STATUS</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(booking of filteredBookings;track $index) {
+          <tr>
+            <td>{{booking.request_id}}</td>
+            <td>{{booking.service_id}}</td>
+            <td>{{booking.service_name || 'N/A'}}</td>
+            <td>{{formatDate(booking.requested_time)}}</td>
+            <td>{{formatDate(booking.scheduled_time)}}</td>
+            <td>
+              <span class="status" [ngClass]="booking.status.toLowerCase()">
+                {{booking.status}}
+              </span>
+            </td>
+            @if(booking.status!='Cancelled') {
+              <td class="actions">
+                <button class="btn update" (click)="updateRequest(booking.request_id,booking.scheduled_time)">✏️</button>
+                <button class="btn cancel" (click)="cancelRequest(booking.request_id)">❌</button>
+                @if (booking.status === 'Accepted') {
+                <span class="arrow" (click)="navigateToDetails(booking.provider_details,booking.request_id)">→</span>
+                }
+  
+              </td>
+            }
+            
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      <button [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)" class="btn-page">
+        Previous
+      </button>
+      <span>Page {{currentPage}}</span>
+      <button [disabled]="apiResponseEnd" (click)="onPageChange(currentPage + 1)" class="btn-page">
+        Next
+      </button>
+    </div>
+
+
+  </div>
+</div>

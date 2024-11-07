@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Leave Review</h2>
+<form [formGroup]="addReviewForm" (ngSubmit)="onSubmit()" mat-dialog-content>
+  <mat-form-field appearance="fill">
+    <mat-label>Comments</mat-label>
+    <input matInput formControlName="comment" placeholder="Add Comment">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Rating</mat-label>
+    <input matInput type="number" formControlName="rating" placeholder="1-5" min="1" max="5" required>
+  </mat-form-field>
+
+  <div mat-dialog-actions>
+    <button mat-button color="primary" [disabled]="addReviewForm.invalid">Save</button>
+    <button mat-button (click)="onCancel()">Cancel</button>
+  </div>
+</form>

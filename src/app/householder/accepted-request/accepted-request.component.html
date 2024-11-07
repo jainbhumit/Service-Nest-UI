@@ -1,0 +1,62 @@
+<div class="services-container">
+  <p-toast/>
+  <header class="services-header">
+    <h1>SERVICE NEST</h1>
+    <button class="back-btn" (click)="onBack()">←</button>
+  </header>
+
+  <div class="view-request">
+    <h2>Provider Detail</h2>
+    <div class="filter-container">
+      <label for="statusFilter">Filter:</label>
+      <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="onStatusChange()">
+        <option value="">All</option>
+        <option value="Pending">Rating(high-low)</option>
+        <option value="Accepted">Price(high-low)</option>
+      </select>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>NAME</th>
+            <th>ADDRESS</th>
+            <th>CONTACT</th>
+            <th>PRICE</th>
+            <th>RATING</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(provider of providerDetail;track $index) {
+          <tr>
+            <td>{{provider.name | uppercase}}</td>
+            <td>{{provider.address | uppercase}}</td>
+            <td>{{provider.contact}}</td>
+            <td>₹{{provider.price}}</td>
+            @if (provider.rating==0) {
+            <td>NEW</td>
+            }@else {
+              <td>{{provider.rating}}</td>
+            }
+              <td class="actions">
+                <button class="btn update" (click)="approveRequest(provider.service_provider_id)">✔️</button>
+              </td>
+            
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      <button [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)" class="btn-page">
+        Previous
+      </button>
+      <span>Page {{currentPage}}</span>
+      <button [disabled]="apiResponseEnd" (click)="onPageChange(currentPage + 1)" class="btn-page">
+        Next
+      </button>
+    </div>
+  </div>
+</div>
