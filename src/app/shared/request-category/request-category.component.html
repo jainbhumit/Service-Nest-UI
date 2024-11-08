@@ -1,0 +1,115 @@
+<!-- <div class="service-nest">
+  <header class="services-header">
+    <button>⬅️</button>
+    <h1>SERVICE NEST</h1>
+    <button class="explore-btn" [routerLink]="'/householder/home'">EXPLORE MORE</button>
+  </header>
+
+  <nav class="sidebar">
+    <button class="nav-item active" [routerLink]="'/user/profile'">PROFILE</button>
+    <button class="nav-item">Bookings</button>
+    <button class="nav-item">SERVICE REQUEST</button>
+    <button class="nav-item">ACCEPT REQUEST</button>
+    <button class="nav-item">APPROVE REQUEST</button>
+  </nav> -->
+
+<div class="services-container">
+
+  <header class="services-header">
+    <h1>SERVICE NEST</h1>
+    <button class="back-btn" (click)="onBack()">←</button>
+    <button class="explore-btn" [routerLink]="'/householder/home'">EXPLORE MORE</button>
+  </header>
+
+  <nav class="sidebar">
+    <button class="nav-item" [routerLink]="'/user/profile'">PROFILE</button>
+    <button class="nav-item" [routerLink]="getRouterLink('requests')">SERVICE REQUEST</button>
+    <button class="nav-item" [routerLink]="getRouterLink('approve')">APPROVE REQUEST</button>
+    <button class="nav-item" [routerLink]="getRouterLink('approve')">REVIEW</button>
+  </nav>
+
+  <div class="main-content">
+    <div class="service-details">
+      <div class="service-card">
+        <img [src]="getServiceImg(currentService.name)" alt="House Cleaning">
+        <h2>{{currentService.name || 'HOUSE CLEANING'}}</h2>
+      </div>
+
+      <div class="service-info">
+        @if (userRole==='Householder') {
+        <button class="request-btn" (click)="requestService()">REQUEST SERVICE</button>
+        }@else if (userRole==='ServiceProvider') {
+          <button class="request-btn" (click)="addService()">ADD SERVICE</button>
+        }
+
+        @if (userRole==='Householder') {
+        <div class="info-grid">
+          <div class="info-item">
+            <span>AVAILABLE PROVIDER</span>
+            <span>{{availableProviders}}</span>
+          </div>
+          <div class="info-item">
+            <span>AVG ESTIMATED PRICE</span>
+            <span>{{avgPrice}}</span>
+          </div>
+        </div>
+        }
+      </div>
+
+      <div class="description">
+        <h3>DESCRIPTION</h3>
+        <p>{{currentService.description || 'PROVIDE THE HOUSE CLEANING SERVICE TO CLEAN YOUR TOILET, KITCHEN, FLOOR'}}
+        </p>
+      </div>
+
+      @if (userRole==='Householder') {
+      <div class="other-categories">
+        <h3>PROVIDERS</h3>
+        <div class="category-grid">
+          @for (provider of providers; track $index) {
+          <div class="category-card">
+            <h4>{{provider.name | uppercase}}</h4>
+            <p>Price- {{provider.price}}</p>
+            @if (provider.rating==0) {
+            <p>Rating- {{provider.rating}}(New)</p>
+            }@else {
+            <p>Rating- {{provider.rating}}</p>
+
+            }
+          </div>
+          }
+        </div>
+      </div>
+      } @else if (userRole==='ServiceProvider') {
+      <div class="other-categories">
+        <h3>Your Services</h3>
+        <div class="category-grid">
+          @if (serviceDetail.length>0) {
+          @for (service of serviceDetail; track $index) {
+          <div class="category-card">
+            <h4>{{service.name | uppercase}}</h4>
+            <p>Price- {{service.price}}</p>
+            <p>Description- {{service.description}}</p>
+            <p>Category- {{service.category}}</p>
+            @if (service.avg_rating==0) {
+            <p>Rating- {{service.avg_rating}}(New)</p>
+            }@else {
+            <p>Rating- {{service.avg_rating}}</p>
+            }
+            <p>Total Reviewer- {{service.rating_count}}</p>
+            <div class="service-action">
+              <button class="delete-service" (click)="cancelService(service.id)">❌</button>
+              <button class="update-service" (click)="updateService(service)">✏️</button>
+            </div>
+           </div>
+          }
+          }@else {
+            <p>You don't have any service</p>
+          }
+
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>

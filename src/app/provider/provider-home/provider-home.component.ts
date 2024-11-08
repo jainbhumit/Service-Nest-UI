@@ -1,9 +1,11 @@
+import { UserService } from './../../services/user.service';
 import { Component } from '@angular/core';
 import { ServiceCategory } from '../../models/service.model';
 import { AuthService } from '../../services/auth.service';
 import { HouseholderService } from '../../services/householder.service';
 import { Router } from '@angular/router';
 import { GetServiceImage } from '../../util/image.url';
+
 
 @Component({
   selector: 'app-provider-home',
@@ -17,12 +19,12 @@ export class ProviderHomeComponent {
 
   constructor(
     private authService: AuthService,
-    private householderService: HouseholderService,
+    private userService: UserService,
     private router:Router
   ) {}
 
   ngOnInit(): void {
-    this.householderService.fetchCategories().subscribe({
+    this.userService.fetchCategories().subscribe({
       next: (response) => {
         if (response.status === 'Success') {
           this.categories = response.data;
@@ -45,8 +47,8 @@ export class ProviderHomeComponent {
 
   onServiceClick(service: ServiceCategory): void {
     console.log('Selected service:', service);
-    this.householderService.currentService.set(service);
-    console.log(this.householderService.currentService())
+    this.userService.currentService.set(service);
+    console.log(this.userService.currentService())
     this.router.navigate([`provider/category`])
   }
 

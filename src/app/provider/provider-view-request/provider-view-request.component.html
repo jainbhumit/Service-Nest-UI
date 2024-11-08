@@ -1,0 +1,52 @@
+<div class="services-container">
+
+  <header class="services-header">
+    <h1>SERVICE NEST</h1>
+    <button class="back-btn" (click)="onBack()">←</button>
+  </header>
+
+  <div class="view-request">
+    <h2>Requests</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>REQUEST ID</th>
+            <th>SERVICE NAME</th>
+            <th>SCHEDULE TIME</th>
+            <th>DESCRIPTION</th>
+            <th>ADDRESS</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(request of paginatedRequest;track $index) {
+          <tr>
+            <td>{{request.request_id}}</td>
+            <td>{{request.service_name || 'N/A'}}</td>
+            <td>{{formatDate(request.scheduled_time)}}</td>
+            <td>{{request.description}}</td>
+            <td>{{request.address}}</td>
+              <td class="actions">
+                <button class="btn update" (click)="acceptRequest(request.request_id)">✅</button>
+              </td>
+            
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      <button [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)" class="btn-page">
+        Previous
+      </button>
+      <span>Page {{currentPage}}</span>
+      <button [disabled]="apiResponseEnd" (click)="onPageChange(currentPage + 1)" class="btn-page">
+        Next
+      </button>
+    </div>
+
+
+  </div>
+</div>

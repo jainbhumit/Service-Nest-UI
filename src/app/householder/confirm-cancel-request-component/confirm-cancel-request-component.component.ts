@@ -10,9 +10,10 @@ import { MessageService } from 'primeng/api';
 })
 export class ConfirmCancelRequestComponentComponent {
   messageService = inject(MessageService)
+  isProviderRole:boolean = this.data.is_provider;
   constructor(public dialogRef: MatDialogRef<ConfirmCancelRequestComponentComponent>,
     private householderService: HouseholderService,
-    @Inject(MAT_DIALOG_DATA) public data: {request_id:string},
+    @Inject(MAT_DIALOG_DATA) public data: {is_provider:boolean},
   ) {}
 
   onConfirm(): void {

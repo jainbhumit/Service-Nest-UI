@@ -1,0 +1,36 @@
+@if (isUpdate) {
+  <h2 mat-dialog-title>Update Service</h2>
+}@else {
+  <h2 mat-dialog-title>Add Service</h2>
+}
+<form [formGroup]="addServiceForm" (ngSubmit)="onSubmit()" mat-dialog-content>
+  <mat-form-field appearance="fill">
+    <mat-label>Service Name</mat-label>
+    <input matInput formControlName="name" placeholder="Enter service name" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Category</mat-label>
+    <input matInput formControlName="category" readonly>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Description</mat-label>
+    <input matInput formControlName="description" required>
+  </mat-form-field>
+  
+  <mat-form-field appearance="fill">
+    <mat-label>Price</mat-label>
+    <input matInput type="number" formControlName="price" required>
+  </mat-form-field>
+
+  <div mat-dialog-actions>
+    @if (isUpdate) {
+      <button mat-button color="primary" [disabled]="addServiceForm.invalid">Update</button>
+    }@else {
+      <button mat-button color="primary" [disabled]="addServiceForm.invalid">Add</button>
+    }
+    <button mat-button (click)="onCancel()">Cancel</button>
+  </div>
+</form>
+

@@ -5,5 +5,6 @@ householder = 'Householder',
 serviceProvider = 'ServiceProvider'
 }
 export const BaseUrl = 'http://localhost:8080';
-export const ApiUrlWithUser = '/api/user'
+export const ApiUrlWithUser = '/api/user';
+export const ApiUrlWithProvider = '/api/provider';
 export const PasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/

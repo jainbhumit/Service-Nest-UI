@@ -5,6 +5,8 @@ import { UpdateProfile, UserProfile } from '../../models/user.model';
 import { Router } from '@angular/router';
 import { LocalizedString } from '@angular/compiler';
 import { Location } from '@angular/common';
+import { Role } from '../../config';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -14,6 +16,7 @@ import { Location } from '@angular/common';
 export class ProfileComponent implements OnInit {
   private location = inject(Location)
   private userService = inject(UserService);
+  private authService = inject(AuthService);
   update: boolean = false;
   router:Router = inject(Router);
   errorMessage: string = '';
@@ -28,6 +31,7 @@ export class ProfileComponent implements OnInit {
     security_answer: '',
     is_active: true,
   };
+  userRole:Role | undefined; 
   updateForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -43,6 +47,7 @@ export class ProfileComponent implements OnInit {
     contact: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{10,}$/)]),
   });
   ngOnInit(): void {
+    this.userRole = this.authService?.userRole(); 
     this.userService.getProfile().subscribe({
       next: (response) => {
         this.user = response.data;

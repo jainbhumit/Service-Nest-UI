@@ -31,9 +31,9 @@ import { ToastModule } from 'primeng/toast';
 
 import { routes } from './app.routes';
 import { ProviderHomeComponent } from './provider/provider-home/provider-home.component';
-import { authInterceptor } from './intercepters/auth.intercepter';
+import { authInterceptor, authResponseInterceptor } from './intercepters/auth.intercepter';
 import { ForgotPasswordComponent } from './shared/forgot-password/forgot-password.component';
-import { HouseholderCategoryComponent } from './householder/householder-category/householder-category.component';
+import { RequestCategoryComponent } from './shared/request-category/request-category.component';
 import { RequestServiceFormComponent } from './householder/request-service-form/request-service-form.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { DatePipe } from '@angular/common';
@@ -47,6 +47,11 @@ import { AcceptedRequestComponent } from './householder/accepted-request/accepte
 import { ApproveRequestComponent } from './householder/approve-request/approve-request.component';
 import { AddReviewFormComponent } from './householder/add-review-form/add-review-form.component';
 import { UnauthorisedComponent } from './shared/unauthorised/unauthorised.component';
+import { AddServiceFormComponent } from './provider/add-service-form/add-service-form.component';
+import { ProviderViewRequestComponent } from './provider/provider-view-request/provider-view-request.component';
+import { ProviderApproveRequestComponent } from './provider/provider-approve-request/provider-approve-request.component';
+import { ProviderReviewComponent } from './provider/provider-review/provider-review.component';
+import { AcceptServiceDialogComponent } from './provider/accept-service-dialog/accept-service-dialog.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +62,7 @@ import { UnauthorisedComponent } from './shared/unauthorised/unauthorised.compon
     HouseholderHomeComponent,
     ProviderHomeComponent,
     ForgotPasswordComponent,
-    HouseholderCategoryComponent,
+    RequestCategoryComponent,
     RequestServiceFormComponent,
     ProfileComponent,
     HouseholderRequestComponent,
@@ -68,6 +73,11 @@ import { UnauthorisedComponent } from './shared/unauthorised/unauthorised.compon
     ApproveRequestComponent,
     AddReviewFormComponent,
     UnauthorisedComponent,
+    AddServiceFormComponent,
+    ProviderViewRequestComponent,
+    ProviderApproveRequestComponent,
+    ProviderReviewComponent,
+    AcceptServiceDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -88,6 +98,7 @@ import { UnauthorisedComponent } from './shared/unauthorised/unauthorised.compon
   providers: [
     DatePipe,
     { provide: HTTP_INTERCEPTORS, useValue: {intercept:authInterceptor}, multi: true },
+    { provide: HTTP_INTERCEPTORS, useValue: {intercept:authResponseInterceptor}, multi: true },
     provideRouter(routes, withComponentInputBinding()),
     provideAnimationsAsync('noop'),
     MessageService

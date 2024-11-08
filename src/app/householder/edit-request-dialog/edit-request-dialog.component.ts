@@ -31,7 +31,7 @@ export class EditRequestDialogComponent {
       this.householderService.updateServiceRequest(body).subscribe({
         next: (response) => {
           console.log('update request successfully');
-          this.dialogRef.close();
+          this.dialogRef.close(body.scheduled_time);
         },
         error: (err) =>{
           console.log(err.error.message);

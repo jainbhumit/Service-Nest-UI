@@ -9,11 +9,7 @@ import { UserProfile } from '../models/user.model';
   providedIn: 'root',
 })
 export class HouseholderService {
-  currentService = signal<ServiceCategory>({
-    name: '',
-    description: '',
-    id: '',
-  });
+
   currentAcceptRequestDetail = signal<{
     request_id:string;
     provider_details:Booking["provider_details"][]
@@ -25,17 +21,6 @@ export class HouseholderService {
   private bookings: Booking[] | null = null;
   constructor(private http: HttpClient) {}
 
-  fetchCategories(): Observable<{
-    status: string;
-    message: string;
-    data: ServiceCategory[];
-  }> {
-    return this.http.get<{
-      status: string;
-      message: string;
-      data: ServiceCategory[];
-    }>(`${this.apiUrl}/categories`);
-  }
 
   getServiceByCategory(
     categoryName: string

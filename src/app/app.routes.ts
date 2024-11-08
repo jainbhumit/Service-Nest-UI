@@ -6,14 +6,16 @@ import { HouseholderHomeComponent } from "./householder/householder-home/househo
 import { ProviderHomeComponent } from "./provider/provider-home/provider-home.component";
 import { authGuard } from "./guards/auth.guard";
 import { ForgotPasswordComponent } from "./shared/forgot-password/forgot-password.component";
-import { HouseholderCategoryComponent } from "./householder/householder-category/householder-category.component";
+import { RequestCategoryComponent } from "./shared/request-category/request-category.component";
 import { ProfileComponent } from "./shared/profile/profile.component";
 import { HouseholderRequestComponent } from "./householder/householder-request/householder-request.component";
 import { AcceptedRequestComponent } from "./householder/accepted-request/accepted-request.component";
-// import { acessGuard } from "./guards/access.guard";
 import { ApproveRequestComponent } from "./householder/approve-request/approve-request.component";
 import { UnauthorisedComponent } from "./shared/unauthorised/unauthorised.component";
 import { accessGuard } from "./guards/access.guard";
+import { ProviderViewRequestComponent } from "./provider/provider-view-request/provider-view-request.component";
+import { ProviderApproveRequestComponent } from "./provider/provider-approve-request/provider-approve-request.component";
+import { ProviderReviewComponent } from "./provider/provider-review/provider-review.component";
 
 export const routes: Routes = [
   {
@@ -50,7 +52,7 @@ export const routes: Routes = [
       },
       {
         path: 'category',
-        component: HouseholderCategoryComponent,
+        component: RequestCategoryComponent,
         canActivate: [new accessGuard('/householder/home').acessGuard]
       },
       {
@@ -83,8 +85,28 @@ export const routes: Routes = [
       },
       {
         path: 'category',
-        component: HouseholderCategoryComponent
+        component: RequestCategoryComponent,
+        canActivate: [new accessGuard('/provider/home').acessGuard]
       },
+      {
+        path:'requests',
+        component: ProviderViewRequestComponent
+      },
+      {
+        path:'approve',
+        children:[
+          {
+            path:'',
+            component:ProviderApproveRequestComponent
+          },
+          {
+            path:'review',
+            component:ProviderReviewComponent,
+            canActivate:[new accessGuard('/provider/approve').acessGuard]
+          }
+        ]
+  
+      }
     ]
   },
 ] 

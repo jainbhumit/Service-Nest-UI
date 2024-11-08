@@ -1,14 +1,20 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiUrlWithUser, BaseUrl } from '../config';
 import { UpdateProfile, UserProfile } from '../models/user.model';
+import { ServiceCategory } from '../models/service.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   private apiUrl = `${BaseUrl}${ApiUrlWithUser}`;
+  currentService = signal<ServiceCategory>({
+    name: '',
+    description: '',
+    id: '',
+  });
   constructor(private http: HttpClient) {}
 
   getProfile(): Observable<{
@@ -32,5 +38,17 @@ export class UserService {
       message: string;
     }>(`${this.apiUrl}/profile`,data);
 
+  }
+
+  fetchCategories(): Observable<{
+    status: string;
+    message: string;
+    data: ServiceCategory[];
+  }> {
+    return this.http.get<{
+      status: string;
+      message: string;
+      data: ServiceCategory[];
+    }>(`${this.apiUrl}/categories`);
   }
 }

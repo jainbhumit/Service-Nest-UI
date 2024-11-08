@@ -76,8 +76,8 @@ export class HouseholderRequestComponent implements OnInit {
   }
 
   onPageChange(newPage: number) {
-    this.currentPage = newPage;
     this.apiResponseEnd = false;
+    this.currentPage = newPage;
     this.loadBookings();
   }
 
@@ -86,11 +86,20 @@ export class HouseholderRequestComponent implements OnInit {
       width:'450px',
       data:{request_id:requestId,scheduled_time:scheduleTime}
     });
+    dialog.afterClosed().subscribe({
+      next:(res)=>{
+        this.filteredBookings.map((curr) =>{
+          if (curr.request_id==requestId) 
+            curr.scheduled_time=res;
+        })
+        this.messageService.add({severity:'success',summary:'Success',detail:'request update successfully'})
+      }
+    })
   }
   cancelRequest(requestId:string) {
     console.log('On Cancel');
     const dialog = this.dialog.open(ConfirmCancelRequestComponentComponent,{
-      width: '500px',
+      width: '450px',
       data: {request_id:requestId}
     });
     dialog.afterClosed().subscribe((response) => {
@@ -99,6 +108,11 @@ export class HouseholderRequestComponent implements OnInit {
           next: (response) => {
             if (response.message == 'Request cancelled successfully') {
               this.messageService.add({ severity: 'success', summary: 'Success', detail: response.message});
+              this.filteredBookings.map((curr) => {
+                if (curr.request_id==requestId) {
+                  curr.status='Cancelled';
+                }
+              })
             }
           },
           error: (err) => this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message})
