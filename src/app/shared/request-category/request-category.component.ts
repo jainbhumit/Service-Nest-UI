@@ -14,6 +14,7 @@ import { AuthService } from '../../services/auth.service';
 import { ProviderService } from '../../services/provider.service';
 import { MessageService } from 'primeng/api';
 import { ConfirmCancelRequestComponentComponent } from '../../householder/confirm-cancel-request-component/confirm-cancel-request-component.component';
+import { AcceptServiceDialogComponent } from '../../provider/accept-service-dialog/accept-service-dialog.component';
 
 @Component({
   selector: 'app-householder-category',
@@ -32,6 +33,7 @@ export class RequestCategoryComponent implements OnInit {
   avgPrice: number = 0;
   providers: ProviderDetail[]= [];
   userRole:Role | undefined; 
+  userId:string= '';
   private providerService = inject(ProviderService)
   constructor(
     private router: Router,
@@ -45,7 +47,7 @@ export class RequestCategoryComponent implements OnInit {
   ngOnInit() {
     this.userRole = this.authService?.userRole();
     this.currentService = this.userService.currentService();
-    if(this.userRole==='Householder') {
+    if(this.userRole===Role.householder || this.userRole===Role.admin) {
       this.householderService
       .getServiceByCategory(this.currentService.name)
       .subscribe({
@@ -90,17 +92,34 @@ export class RequestCategoryComponent implements OnInit {
     });
   }
   requestService() {
-    const dialogRef = this.dialog.open(RequestServiceFormComponent,{
-      width: '450px',
-      data: {category:this.currentService.name}
-    })
+    if(this.userRole==='Admin') {
+      const dialogRef = this.dialog.open(AcceptServiceDialogComponent,{
+        width:'450px',
+      });
+      dialogRef.afterClosed().subscribe((res) =>{
+        if(res) {
+          const dialogRef = this.dialog.open(RequestServiceFormComponent,{
+            width: '450px',
+            data: {category:this.currentService.name}
+          })
+        }
+      })
+    }else{
+      const dialogRef = this.dialog.open(RequestServiceFormComponent,{
+        width: '450px',
+        data: {category:this.currentService.name}
+      })
+    }
   }
   onBack() {
-    if(this.userRole=='Householder') {
+    if(this.userRole=== 'Householder') {
       this.router.navigate(['/householder/home']);
     }
-    if(this.userRole == 'ServiceProvider') {
+    if(this.userRole === 'ServiceProvider') {
       this.router.navigate(['/provider/home']);
+    }
+    if(this.userRole==='Admin') {
+      this.router.navigate(['/admin/home']);
     }
   }
   addService() {

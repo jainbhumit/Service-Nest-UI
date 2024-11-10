@@ -52,6 +52,9 @@ import { ProviderViewRequestComponent } from './provider/provider-view-request/p
 import { ProviderApproveRequestComponent } from './provider/provider-approve-request/provider-approve-request.component';
 import { ProviderReviewComponent } from './provider/provider-review/provider-review.component';
 import { AcceptServiceDialogComponent } from './provider/accept-service-dialog/accept-service-dialog.component';
+import { AdminAddCategoryComponent } from './admin/admin-add-category/admin-add-category.component';
+import { ServicesComponent } from './admin/view-services/view-services.component';
+import { DateTimePipe } from './pipes/date-time.pipe';
 
 @NgModule({
   declarations: [
@@ -78,6 +81,8 @@ import { AcceptServiceDialogComponent } from './provider/accept-service-dialog/a
     ProviderApproveRequestComponent,
     ProviderReviewComponent,
     AcceptServiceDialogComponent,
+    AdminAddCategoryComponent,
+    ServicesComponent,
   ],
   imports: [
     BrowserModule,
@@ -94,6 +99,7 @@ import { AcceptServiceDialogComponent } from './provider/accept-service-dialog/a
     MatDatepickerModule,
     MatNativeDateModule,
     ToastModule,
+    DateTimePipe
   ],
   providers: [
     DatePipe,

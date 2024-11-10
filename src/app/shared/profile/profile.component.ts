@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
@@ -17,6 +18,7 @@ export class ProfileComponent implements OnInit {
   private location = inject(Location)
   private userService = inject(UserService);
   private authService = inject(AuthService);
+  private messageService  = inject(MessageService);
   update: boolean = false;
   router:Router = inject(Router);
   errorMessage: string = '';
@@ -91,12 +93,22 @@ export class ProfileComponent implements OnInit {
       this.userService.updateProfile(data).subscribe({
         next:(response) => {
           if(response.status=='Success') {
-            console.log('User update successfully');
-            this.router.navigate(['/householder/home']);
+            this.messageService.add({severity:'success',summary:'Success',detail:"User update successfully"});
+            if(this.userRole=='Householder') {
+              this.router.navigate(['/householder/home']);
+            }else if(this.userRole==='ServiceProvider'){
+              this.router.navigate(['/provider/home']);
+            }else {
+              this.router.navigate(['/admin/home'])
+            }
           }
         },
         error: (err) => {
-          this.errorMessage=err.error.message;
+          if(err.error.message=='Error updating user') {
+            this.errorMessage='email id already exist';
+          }else {
+            this.errorMessage=err.error.message;
+          }
         }
       })
     }else {
@@ -122,5 +134,15 @@ export class ProfileComponent implements OnInit {
 
   onBack() {
     this.location.back();
+  }
+
+  getRouterLink(path:string):string {
+    if(this.userRole==='Householder') {
+      return `/householder/${path}`;
+    }else if(this.userRole==='ServiceProvider') {
+      return `/provider/${path}`
+    }else {
+      return `/admin/${path}`;
+    }
   }
 }

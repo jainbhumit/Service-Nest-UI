@@ -16,6 +16,7 @@ import { accessGuard } from "./guards/access.guard";
 import { ProviderViewRequestComponent } from "./provider/provider-view-request/provider-view-request.component";
 import { ProviderApproveRequestComponent } from "./provider/provider-approve-request/provider-approve-request.component";
 import { ProviderReviewComponent } from "./provider/provider-review/provider-review.component";
+import { ServicesComponent } from "./admin/view-services/view-services.component";
 
 export const routes: Routes = [
   {
@@ -99,14 +100,51 @@ export const routes: Routes = [
             path:'',
             component:ProviderApproveRequestComponent
           },
-          {
-            path:'review',
-            component:ProviderReviewComponent,
-            canActivate:[new accessGuard('/provider/approve').acessGuard]
-          }
         ]
   
+      },
+      {
+        path:'review',
+        component:ProviderReviewComponent,
       }
+
     ]
   },
+  {
+    path:'admin',
+    canActivate:[authGuard],
+    children:[
+      {
+        path:'home',
+        component:HouseholderHomeComponent
+      },
+      {
+        path:'category',
+        component:RequestCategoryComponent,
+        canActivate:[new accessGuard('/admin/home').acessGuard]
+      },
+      {
+        path: 'requests',
+        children: [
+          {
+            path: '',
+            component: HouseholderRequestComponent
+          },
+          {
+            path: 'accept',
+            component: AcceptedRequestComponent,
+            canActivate: [new accessGuard('/admin/requests').acessGuard]
+          }
+        ]
+      },
+      {
+        path: 'approve',
+        component: ApproveRequestComponent,
+      },
+      {
+        path: 'services',
+        component: ServicesComponent 
+      }
+    ]
+  }
 ] 

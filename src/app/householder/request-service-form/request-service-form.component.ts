@@ -4,6 +4,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HouseholderService } from '../../services/householder.service';
 import { RequestBody } from '../../models/service.model';
+import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
+import { Role } from '../../config';
+import { AdminService } from '../../services/admin.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-request-service-form',
@@ -13,11 +18,16 @@ import { RequestBody } from '../../models/service.model';
 export class RequestServiceFormComponent {
   requestServiceForm: FormGroup;
   datePipe = inject(DatePipe);
+  userRole:Role | undefined = this.authService.userRole();
+  
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<RequestServiceFormComponent>,
     private householderService: HouseholderService,
-    @Inject(MAT_DIALOG_DATA) public data: {category:string},
+    private adminService: AdminService,
+    private messageService: MessageService,
+    @Inject(MAT_DIALOG_DATA) public data: {category:string,user_id:string},
+    private authService: AuthService
   ) {
     this.requestServiceForm = this.fb.group({
       service_name: ['', Validators.required],
@@ -42,13 +52,30 @@ export class RequestServiceFormComponent {
         description:this.requestServiceForm.controls['description'].value,        
         scheduled_time: formattedDateTime as string
       };
-      this.householderService.requestService(requestData).subscribe({
-      next:(response) => this.dialogRef.close(),
-      error:(err) => {
-        console.log(err.error.message)
-        this.dialogRef.close()
+      if(this.userRole==='Householder') {
+        this.householderService.requestService(requestData).subscribe({
+          next:(response) => {
+            this.messageService.add({severity:'success',summary:'Success',detail:'Request successfully'});
+            this.dialogRef.close()
+          },
+          error:(err) => {
+            console.log(err.error.message)
+            this.dialogRef.close()
+          }
+          })
+      } else {
+        this.adminService.requestService(requestData).subscribe({
+          next:(response) => {
+            this.messageService.add({severity:'success',summary:'Success',detail:'Request successfully'})
+            this.dialogRef.close()
+          },
+          error:(err) => {
+            console.log(err.error.message)
+            this.dialogRef.close()
+          }
+          })
       }
-      })
+  
     }
   }
 

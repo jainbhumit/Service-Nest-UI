@@ -4,6 +4,9 @@ import { HouseholderService } from '../../services/householder.service';
 import { Location } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
+import { AdminService } from '../../services/admin.service';
+import { AuthService } from '../../services/auth.service';
+import { Role } from '../../config';
 
 @Component({
   selector: 'app-accepted-request',
@@ -12,6 +15,9 @@ import { Router } from '@angular/router';
 })
 export class AcceptedRequestComponent implements OnInit {
   providerDetail: Booking["provider_details"] = [];
+  private authService = inject(AuthService);
+  userRole:string |undefined
+  private adminService= inject(AdminService);
   private householderService = inject(HouseholderService);
   private location = inject(Location);
   private messageService = inject(MessageService);
@@ -24,6 +30,7 @@ export class AcceptedRequestComponent implements OnInit {
   totalCount:number = 0;
 
   ngOnInit(): void {
+    this.userRole = this.authService.userRole();
     this.providerDetail = this.householderService.currentAcceptRequestDetail().provider_details as [];
     this.totalCount = this.householderService.currentAcceptRequestDetail().provider_details.length;
     this.applyPagination();
@@ -45,15 +52,25 @@ export class AcceptedRequestComponent implements OnInit {
       request_id:this.householderService.currentAcceptRequestDetail().request_id,
       provider_id:providerId
     }
-    this.householderService.approveRequest(body).subscribe({
-      next:(response) => {
-        this.messageService.add({severity:'success',summary:'Success',detail:response.message})
-      },
-      error:(err) =>{
-        this.messageService.add({severity:'error',summary:'Error',detail:err.error.message});
-      }
-    })
-
+    if(this.userRole === Role.householder) {
+      this.householderService.approveRequest(body).subscribe({
+        next:(response) => {
+          this.messageService.add({severity:'success',summary:'Success',detail:response.message})
+        },
+        error:(err) =>{
+          this.messageService.add({severity:'error',summary:'Error',detail:err.error.message});
+        }
+      })
+    }else {
+      this.adminService.approveRequest(body).subscribe({
+        next:(response) => {
+          this.messageService.add({severity:'success',summary:'Success',detail:response.message})
+        },
+        error:(err) =>{
+          this.messageService.add({severity:'error',summary:'Error',detail:err.error.message});
+        }
+      })
+    }
     this.location.back();
   }
 

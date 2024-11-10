@@ -8,6 +8,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditRequestDialogComponent } from '../edit-request-dialog/edit-request-dialog.component';
 import { ConfirmCancelRequestComponentComponent } from '../confirm-cancel-request-component/confirm-cancel-request-component.component';
 import { AddReviewFormComponent } from '../add-review-form/add-review-form.component';
+import { AdminService } from '../../services/admin.service';
+import { AuthService } from '../../services/auth.service';
+import { AcceptServiceDialogComponent } from '../../provider/accept-service-dialog/accept-service-dialog.component';
+import { Role } from '../../config';
 
 @Component({
   selector: 'app-approve-request',
@@ -18,6 +22,9 @@ export class ApproveRequestComponent {
   approveRequests: ApproveRequests[] = [];
   filteredRequests: ApproveRequests[] = [];
   selectedStatus: string = '';
+  userRole:string|undefined;
+  private adminService =inject(AdminService);
+  private authService = inject(AuthService);
   private householderService = inject(HouseholderService);
   private dialog = inject(MatDialog);
   private datePipe = inject(DatePipe);
@@ -29,11 +36,24 @@ export class ApproveRequestComponent {
   apiResponseEnd: boolean = false;
 
   ngOnInit(): void {
-    this.loadApproveRequests();
+    this.userRole = this.authService.userRole();
+    if(this.userRole==='Admin') {
+      const dialogRef = this.dialog.open(AcceptServiceDialogComponent,{
+        width:'450px',
+      })
+      dialogRef.afterClosed().subscribe((res) =>{
+        if(res) {
+          this.loadApproveRequests();
+        }
+      })
+    }else {
+      this.loadApproveRequests();
+    }
   }
 
   loadApproveRequests(): void {
-    this.householderService
+    if(this.userRole===Role.householder) {
+      this.householderService
       .viewApprovedRequest(this.itemsPerPage, this.currentPage)
       .subscribe({
         next: (response) => {
@@ -50,6 +70,26 @@ export class ApproveRequestComponent {
           console.log(err.error.message);
         },
       });
+    }else{
+      this.adminService
+      .viewApprovedRequest(this.itemsPerPage, this.currentPage)
+      .subscribe({
+        next: (response) => {
+          if (response.message === 'No service request found') {
+            console.log('No service Request Found');
+            this.approveRequests = [];
+          } else {
+            this.approveRequests = response.data;
+            this.applyStatusFilter();
+            this.apiResponseEnd = response.data.length < this.itemsPerPage;
+          }
+        },
+        error: (err) => {
+          console.log(err.error.message);
+        },
+      });
+    }
+   
   }
   applyStatusFilter(): void {
     console.log(this.selectedStatus,this.approveRequests);
@@ -96,20 +136,37 @@ export class ApproveRequestComponent {
     });
     dialog.afterClosed().subscribe((response) => {
       if (response) {
-        this.householderService.cancelServiceRequest(requestId).subscribe({
-          next: (response) => {
-            if (response.message == 'Request cancelled successfully') {
-              this.messageService.add({ severity: 'success', summary: 'Success', detail: response.message });
-            }
-          },
-          error: (err) => this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message })
-        });
+        if(this.userRole===Role.householder) {
+          this.householderService.cancelServiceRequest(requestId).subscribe({
+            next: (response) => {
+              if (response.message == 'Request cancelled successfully') {
+                this.messageService.add({ severity: 'success', summary: 'Success', detail: response.message });
+              }
+            },
+            error: (err) => this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message })
+          });
+        }else {
+          this.adminService.cancelServiceRequest(requestId).subscribe({
+            next: (response) => {
+              if (response.message == 'Request cancelled successfully') {
+                this.messageService.add({ severity: 'success', summary: 'Success', detail: response.message });
+              }
+            },
+            error: (err) => this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message })
+          });
+        }
+     
       }
     })
   }
 
   onBack() {
-    this.router.navigate(['/householder/home']);
+    if(this.userRole===Role.householder) {
+      this.router.navigate(['/householder/home']);
+    }else {
+    this.router.navigate(['/admin/home']);
+
+    }
   }
 
   onStatusChange() {

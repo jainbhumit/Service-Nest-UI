@@ -13,12 +13,12 @@ import { AcceptServiceDialogComponent } from '../accept-service-dialog/accept-se
 @Component({
   selector: 'app-provider-view-request',
   templateUrl: './provider-view-request.component.html',
-  styleUrl: './provider-view-request.component.scss'
+  styleUrl: './provider-view-request.component.scss',
 })
 export class ProviderViewRequestComponent {
   paginatedRequest: ProviderViewRequest[] = [];
   private providerService = inject(ProviderService);
-  private dialog= inject(MatDialog);
+  private dialog = inject(MatDialog);
   private datePipe = inject(DatePipe);
   private router: Router = inject(Router);
   private messageService = inject(MessageService);
@@ -51,14 +51,6 @@ export class ProviderViewRequestComponent {
       });
   }
 
-  formatDate(dateString: string): string {
-    dateString = dateString.replace('T',' ');
-    dateString = dateString.replace('Z','');
-    const newDateTime:string = this.datePipe.transform(dateString, 'M/d/yyyy, h:mm:ss a') || '' ;
-    return newDateTime;
-  }
-
-
   onPageChange(newPage: number) {
     this.currentPage = newPage;
     this.apiResponseEnd = false;
@@ -67,21 +59,24 @@ export class ProviderViewRequestComponent {
 
   acceptRequest(requestId: string) {
     const dialogRef = this.dialog.open(AcceptServiceDialogComponent, {
-      width:'450px',
-      data:{request_id:requestId}
-    })
+      width: '450px',
+      data: { request_id: requestId },
+    });
 
     dialogRef.afterClosed().subscribe({
       next: (res) => {
-        if(res) {
-          this.messageService.add({severity:'success',summary:"Success",detail:"Service added successfully"})
+        if (res) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Service added successfully',
+          });
         }
-      }
-    })
+      },
+    });
   }
 
   onBack() {
     this.router.navigate(['/provider/home']);
   }
-
 }

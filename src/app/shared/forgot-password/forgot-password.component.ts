@@ -8,6 +8,7 @@ import {
 import { ForgetPasswordData } from '../../models/auth.model';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { MessageService } from 'primeng/api';
 
 function validPassword(control: AbstractControl) {
   const password = control.value;
@@ -23,6 +24,7 @@ function validPassword(control: AbstractControl) {
 export class ForgotPasswordComponent {
   private authService = inject(AuthService);
   private router: Router = inject(Router);
+  private messageService = inject(MessageService);
   errorMessage: string = '';
   forgotForm = new FormGroup({
     email: new FormControl('', {
@@ -58,11 +60,11 @@ export class ForgotPasswordComponent {
       this.authService.forgetPassword(updatedData).subscribe({
         next: (response) => {
           if (response) {
+            this.messageService.add({severity:'success',summary:'Success',detail:"password update succesfully"});
             this.router.navigate(['/login']);
           }
         },
         error: (error) => {
-          console.log(error);
           this.errorMessage = error.error.message;
         },
       });

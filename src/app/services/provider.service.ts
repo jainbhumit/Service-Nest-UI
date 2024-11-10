@@ -1,4 +1,4 @@
-import { ProviderApproveRequest, ProviderViewRequest, Service } from './../models/service.model';
+import { ProviderApproveRequest, ProviderReview, ProviderViewRequest, Service } from './../models/service.model';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, tap, throwError } from 'rxjs';
@@ -115,5 +115,21 @@ export class ProviderService {
       message:string,
       data:ProviderApproveRequest[]
     }>(`${BaseUrl}${ApiUrlWithUser}/service/request/approved`,{params})
+  }
+
+  getReview(itemsPerPage: number, currentPage: number):Observable<{
+    status:string,
+    message:string,
+    data:ProviderReview[]
+  }> {
+    const params = {
+      limit: itemsPerPage,
+      offset: (currentPage-1) * itemsPerPage
+    }
+    return this.http.get<{
+      status:string,
+      message:string,
+      data:ProviderReview[]
+    }>(`${BaseUrl}${ApiUrlWithProvider}/reviews`,{params})
   }
 }

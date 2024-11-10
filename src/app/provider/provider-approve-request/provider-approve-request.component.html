@@ -11,8 +11,8 @@
       <label for="statusFilter">Filter:</label>
       <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="onStatusChange()">
         <option value="">All</option>
-        <option value="New to Old">New to Old</option>
-        <option value="Old to New">Old to New</option>
+        <option value="Late">Late</option>
+        <option value="Early">Early</option>
       </select>
     </div>
     <div class="table-container">
@@ -33,7 +33,7 @@
           <tr>
             <td>{{request.request_id || 'N/A'}}</td>
             <td>{{request.service_name}}</td>
-            <td>{{formatDate(request.scheduled_time)}}</td>
+            <td>{{request.scheduled_time | datetime}}</td>
             <td>{{request.householder_name}}</td>
             <td>{{request.householder_contact}}</td>
             <td>{{request.householder_address}}</td>

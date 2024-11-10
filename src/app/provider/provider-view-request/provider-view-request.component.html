@@ -24,7 +24,7 @@
           <tr>
             <td>{{request.request_id}}</td>
             <td>{{request.service_name || 'N/A'}}</td>
-            <td>{{formatDate(request.scheduled_time)}}</td>
+            <td>{{request.scheduled_time | datetime}}</td>
             <td>{{request.description}}</td>
             <td>{{request.address}}</td>
               <td class="actions">

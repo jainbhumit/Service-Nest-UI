@@ -1,5 +1,5 @@
 <div class="services-container">
-
+  <p-toast/>
   <header class="services-header">
     <h1>SERVICE NEST</h1>
     <button class="back-btn" (click)="onBack()">←</button>
@@ -10,8 +10,10 @@
     <div class="filter-container">
       <label for="statusFilter">Filter:</label>
       <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="onStatusChange()">
+        <option value="">All</option>
+        
         @for (category of categories.keys(); track $index) {
-          <option [value]="category">{{categories.get(category)}}</option>
+          <option [value]="categories.get(category)">{{categories.get(category)}}</option>
         }
       </select>
     </div>
@@ -19,21 +21,27 @@
       <table>
         <thead>
           <tr>
-            <th>ID</th>
+            <th>SERVICE NAME</th>
             <th>CATEGORY</th>
-            <th>COMMENT</th>
+            <th>SERVICE PRICE</th>
             <th>RATING</th>
-            <th>REVIEW DATE</th>
+            <th>TOTAL REVIEWER</th>
+            <th>DEACTIVATE</th>
           </tr>
         </thead>
         <tbody>
-          @for(review of filteredReview;track $index) {
+          @for(service of filteredServices;track $index) {
           <tr>
-            <td>{{review.id}}</td>
-            <td>{{categories.get(review.service_id)}}</td>
-            <td>{{review.comments}}</td>
-            <td>{{review.rating}}</td>
-            <td>{{review.review_date | datetime}}</td>
+            <td>{{service.name}}</td>
+            <td>{{service.category}}</td>
+            <td>₹{{service.price}}</td>
+            <td>{{service.avg_rating}}</td>
+            <td>{{service.rating_count}}</td>
+            <td class="actions">
+              <button class="btn cancel" (click)="deactivateAccount(service.provider_id)">❌</button>
+            </td>
+            
+            
           </tr>
           }
         </tbody>

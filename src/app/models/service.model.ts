@@ -102,11 +102,22 @@ export type ProviderApproveRequest = {
   householder_id: string;
   householder_name: string;
   householder_address: string;
-  householder_contact:string
+  householder_contact: string;
   approve_status: boolean;
   service_id: string;
   requested_time: string;
   scheduled_time: string;
   status: string;
-  service_name:string;
+  service_name: string;
 };
+
+export type ProviderReview = {
+  id: string;
+  service_id: string;
+  householder_id: string;
+  provider_id: string;
+  rating: number;
+  comments: string;
+  review_date: string;
+};
+

@@ -36,8 +36,8 @@
             <td>{{booking.request_id}}</td>
             <td>{{booking.service_id}}</td>
             <td>{{booking.service_name || 'N/A'}}</td>
-            <td>{{formatDate(booking.requested_time)}}</td>
-            <td>{{formatDate(booking.scheduled_time)}}</td>
+            <td>{{booking.requested_time | datetime}}</td>
+            <td>{{booking.scheduled_time|datetime}}</td>
             <td>
               <span class="status" [ngClass]="booking.status.toLowerCase()">
                 {{booking.status}}

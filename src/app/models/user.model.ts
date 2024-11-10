@@ -16,3 +16,10 @@ export type UpdateProfile = {
   address:string;
   contact:string;
 }
+
+export type AdminUser = {
+  id: string;
+  name: string;
+  email: string;
+  address: string;
+}

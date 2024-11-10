@@ -1,14 +1,29 @@
 
-<h2 mat-dialog-title>Accept Service</h2>
-<form [formGroup]="acceptServiceForm" (ngSubmit)="onSubmit()" mat-dialog-content>  
-  <mat-form-field appearance="fill">
-    <mat-label>Price</mat-label>
-    <input matInput type="text" formControlName="price" required>
-  </mat-form-field>
+@if (userRole==='ServiceProvider') {
+  <h2 mat-dialog-title>Accept Service</h2>
+  <form [formGroup]="acceptServiceForm" (ngSubmit)="onSubmit()" mat-dialog-content> 
+    <mat-form-field appearance="fill">
+      <mat-label>Price</mat-label>
+      <input matInput type="text" formControlName="price" required>
+    </mat-form-field> 
+    <div mat-dialog-actions>
+      <button mat-button color="primary" [disabled]="acceptServiceForm.invalid">Accept</button>
+      <button mat-button (click)="onCancel()">Cancel</button>
+    </div>
+  </form>
+  }@else {
+    <h2 mat-dialog-title>Request Service</h2>
+    <form [formGroup]="emailForm" (ngSubmit)="onSubmit()" mat-dialog-content> 
+      <mat-form-field appearance="fill">
+        <mat-label>User Email</mat-label>
+        <input matInput type="text" formControlName="email" required>
+      </mat-form-field> 
+      <div mat-dialog-actions>
+        <button mat-button color="primary" [disabled]="emailForm.invalid">Save</button>
+        <button mat-button (click)="onCancel()">Cancel</button>
+      </div>
+    </form>
+  
+  }
 
-  <div mat-dialog-actions>
-    <button mat-button color="primary" [disabled]="acceptServiceForm.invalid">Accept</button>
-    <button mat-button (click)="onCancel()">Cancel</button>
-  </div>
-</form>
 

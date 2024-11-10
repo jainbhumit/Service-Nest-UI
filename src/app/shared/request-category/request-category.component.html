@@ -25,7 +25,13 @@
     <button class="nav-item" [routerLink]="'/user/profile'">PROFILE</button>
     <button class="nav-item" [routerLink]="getRouterLink('requests')">SERVICE REQUEST</button>
     <button class="nav-item" [routerLink]="getRouterLink('approve')">APPROVE REQUEST</button>
-    <button class="nav-item" [routerLink]="getRouterLink('approve')">REVIEW</button>
+    @if(userRole==='ServiceProvider') {
+      <button class="nav-item" [routerLink]="getRouterLink('review')">REVIEW</button>
+    }@else if(userRole==='Householder'){
+      <button class="nav-item" [routerLink]="getRouterLink('approve')">REVIEW</button>
+    }@else {
+      <button class="nav-item" [routerLink]="getRouterLink('services')">REVIEW</button>
+    }
   </nav>
 
   <div class="main-content">
@@ -36,13 +42,13 @@
       </div>
 
       <div class="service-info">
-        @if (userRole==='Householder') {
+        @if (userRole==='Householder' || userRole==='Admin') {
         <button class="request-btn" (click)="requestService()">REQUEST SERVICE</button>
         }@else if (userRole==='ServiceProvider') {
           <button class="request-btn" (click)="addService()">ADD SERVICE</button>
         }
 
-        @if (userRole==='Householder') {
+        @if (userRole==='Householder' || userRole==='Admin') {
         <div class="info-grid">
           <div class="info-item">
             <span>AVAILABLE PROVIDER</span>

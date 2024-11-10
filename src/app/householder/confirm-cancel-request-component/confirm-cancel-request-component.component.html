@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>Confirm Cancellation</h2>
 
-@if (isProviderRole) {
+@if (userRole==='ServiceProvider' || userRole==='Admin') {
   <mat-dialog-content>
     <p>Are you sure you want to delete this service?</p>
   </mat-dialog-content>

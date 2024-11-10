@@ -41,11 +41,10 @@
             </td>
             @if(request.status!='Cancelled') {
               <td class="actions">
-                <button class="btn update" (click)="updateRequest(request.request_id,request.scheduled_time)">✏️</button>
                 <button class="btn cancel" (click)="cancelRequest(request.request_id)">❌</button>
-                @if (true) {
+                @if (userRole==="Householder") {
                   <span class="arrow" (click)="LeaveReview((request.provider_details && request.provider_details[0] )?.service_provider_id,request.service_id)">💬</span>
-                  }
+                }
               </td>
             }
             

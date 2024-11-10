@@ -5,6 +5,7 @@ import { AcceptedRequestComponent } from '../accepted-request/accepted-request.c
 import { ApproveRequestComponent } from '../approve-request/approve-request.component';
 import { HouseholderService } from '../../services/householder.service';
 import { Review } from '../../models/service.model';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-add-review-form',
@@ -12,7 +13,7 @@ import { Review } from '../../models/service.model';
   styleUrl: './add-review-form.component.scss'
 })
 export class AddReviewFormComponent {
-
+  private messageService = inject(MessageService);
   private householderService = inject(HouseholderService);
   addReviewForm: FormGroup = new FormGroup({
     comment: new FormControl('', [Validators.required]),
@@ -33,7 +34,7 @@ export class AddReviewFormComponent {
       }
       this.householderService.addReview(body).subscribe({
         next:(response) =>{
-          console.log(response);
+          this.messageService.add({severity:'success',summary:'Success',detail:response.message})
           this.dialogRef.close();
         },
         error:(err) =>{

@@ -7,6 +7,10 @@ import { ConfirmCancelRequestComponentComponent } from '../confirm-cancel-reques
 import { DatePipe, Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { AcceptServiceDialogComponent } from '../../provider/accept-service-dialog/accept-service-dialog.component';
+import { AuthService } from '../../services/auth.service';
+import { Role } from '../../config';
+import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'app-householder-request',
@@ -17,22 +21,39 @@ export class HouseholderRequestComponent implements OnInit {
   paginatedBookings: Booking[] = [];
   filteredBookings: Booking[] = [];
   selectedStatus: string = '';
+  private authService = inject(AuthService)
   private householderService = inject(HouseholderService);
   private dialog= inject(MatDialog);
   private datePipe = inject(DatePipe);
   private router: Router = inject(Router);
   private messageService = inject(MessageService);
-
+  private adminService = inject(AdminService);
+  userRole:string|undefined;
   currentPage = 1;
   itemsPerPage = 8;
   apiResponseEnd: boolean = false;
 
   ngOnInit(): void {
-    this.loadBookings();
+    this.userRole = this.authService.userRole(); 
+    if(this.userRole==='Admin') {
+      const dialogRef = this.dialog.open(AcceptServiceDialogComponent,{
+        width:'450px',
+      })
+      dialogRef.afterClosed().subscribe((res) =>{
+        if(res) {
+          this.loadBookings();
+        }
+      })
+    }else {
+      this.loadBookings();
+    }
+    
   }
 
   loadBookings(): void {
-    this.householderService
+    console.log(this.userRole);
+    if(this.userRole===Role.householder) {
+      this.householderService
       .fetchBookings(this.itemsPerPage, this.currentPage, '')
       .subscribe({
         next: (response) => {
@@ -49,6 +70,26 @@ export class HouseholderRequestComponent implements OnInit {
           console.log(err.error.message);
         },
       });
+    }else{
+      this.adminService
+      .fetchBookings(this.itemsPerPage, this.currentPage, '')
+      .subscribe({
+        next: (response) => {
+          if (response.message === 'No service request found') {
+            console.log('No service Request Found');
+            this.paginatedBookings = [];
+          } else {
+            this.paginatedBookings = response.data;
+            this.applyStatusFilter();
+            this.apiResponseEnd = response.data.length < this.itemsPerPage;
+          }
+        },
+        error: (err) => {
+          console.log(err.error.message);
+        },
+      });
+    }
+   
   }
   applyStatusFilter(): void {
     this.filteredBookings = this.selectedStatus
@@ -56,12 +97,6 @@ export class HouseholderRequestComponent implements OnInit {
     : this.paginatedBookings;
   }
   
-  formatDate(dateString: string): string {
-    dateString = dateString.replace('T',' ');
-    dateString = dateString.replace('Z','');
-    const newDateTime:string = this.datePipe.transform(dateString, 'M/d/yyyy, h:mm:ss a') || '' ;
-    return newDateTime;
-  }
   navigateToDetails(providerDetails:Booking["provider_details"],requestId:string) {
     if ((providerDetails as []).length>0) {
       const formatDetail:{request_id:string,provider_details:Booking["provider_details"][]} = {
@@ -70,7 +105,12 @@ export class HouseholderRequestComponent implements OnInit {
       }
       this.householderService.currentAcceptRequestDetail.set(formatDetail);
       console.log(this.householderService.currentAcceptRequestDetail());
-      this.router.navigate(['/householder/requests/accept'])
+      if(this.userRole===Role.householder) {
+        this.router.navigate(['/householder/requests/accept'])
+      }else {
+        this.router.navigate(['/admin/requests/accept'])
+        
+      }
 
     }
   }
@@ -104,25 +144,48 @@ export class HouseholderRequestComponent implements OnInit {
     });
     dialog.afterClosed().subscribe((response) => {
       if (response) {
-        this.householderService.cancelServiceRequest(requestId).subscribe({
-          next: (response) => {
-            if (response.message == 'Request cancelled successfully') {
-              this.messageService.add({ severity: 'success', summary: 'Success', detail: response.message});
-              this.filteredBookings.map((curr) => {
-                if (curr.request_id==requestId) {
-                  curr.status='Cancelled';
-                }
-              })
-            }
-          },
-          error: (err) => this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message})
-        });
+        console.log(this.adminService.userId);
+        if(this.userRole===Role.householder) {
+          this.householderService.cancelServiceRequest(requestId).subscribe({
+            next: (response) => {
+              if (response.message == 'Request cancelled successfully') {
+                this.messageService.add({ severity: 'success', summary: 'Success', detail: response.message});
+                this.filteredBookings.map((curr) => {
+                  if (curr.request_id==requestId) {
+                    curr.status='Cancelled';
+                  }
+                })
+              }
+            },
+            error: (err) => this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message})
+          });
+        } else {
+          this.adminService.cancelServiceRequest(requestId).subscribe({
+            next: (response) => {
+              if (response.message == 'Request cancelled successfully') {
+                this.messageService.add({ severity: 'success', summary: 'Success', detail: response.message});
+                this.filteredBookings.map((curr) => {
+                  if (curr.request_id==requestId) {
+                    curr.status='Cancelled';
+                  }
+                })
+              }
+            },
+            error: (err) => this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message})
+          });
+        }
+     
       }
     })
   }
 
   onBack() {
-    this.router.navigate(['/householder/home']);
+    if(this.userRole===Role.householder) {
+      this.router.navigate(['/householder/home']);
+    }else {
+      this.router.navigate(['/admin/home']);
+      
+    }
   }
 
   onStatusChange() {

@@ -46,28 +46,21 @@ export class ProviderApproveRequestComponent {
       });
   }
   applyStatusFilter(): void {
-    console.log(this.selectedStatus,this.approveRequests);
-    if (this.selectedStatus == 'New to Old') {
-      this.filteredRequests = this.approveRequests.sort((a, b) => {
-        const dateA = new Date(a.requested_time).getTime();
-        const dateB = new Date(b.requested_time).getTime();
-        return dateB - dateA;
-      })
-    } else if (this.selectedStatus == 'Old to New') {
-      this.filteredRequests = this.approveRequests.sort((a, b) => {
-        const dateA = new Date(a.requested_time).getTime();
-        const dateB = new Date(b.requested_time).getTime();
-        return dateA - dateB;
-      })
+    if (this.selectedStatus == 'Late') {
+      this.filteredRequests = this.approveRequests.filter((request) => {
+        const requestTime = new Date(request.scheduled_time).getTime();
+        const currentTime = new Date().getTime();
+        return currentTime > requestTime;
+      });
+    } else if (this.selectedStatus == 'Early') {
+      this.filteredRequests = this.approveRequests.filter((request) => {
+        const requestTime = new Date(request.scheduled_time).getTime();
+        const currentTime = new Date().getTime();
+        return currentTime < requestTime;
+      });
     } else {
-      this.filteredRequests = this.approveRequests
+      this.filteredRequests = this.approveRequests;
     }
-  }
-  formatDate(dateString: string): string {
-    dateString = dateString.replace('T', ' ');
-    dateString = dateString.replace('Z', '');
-    const newDateTime: string = this.datePipe.transform(dateString, 'M/d/yyyy, h:mm:ss a') || '';
-    return newDateTime;
   }
 
   onPageChange(newPage: number) {
