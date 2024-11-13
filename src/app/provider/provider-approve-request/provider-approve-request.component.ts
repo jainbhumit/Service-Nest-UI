@@ -1,9 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { ProviderApproveRequest } from '../../models/service.model';
-import { ProviderService } from '../../services/provider.service';
+import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { MessageService } from 'primeng/api';
+
+import { ProviderApproveRequest } from '../../models/service.model';
+import { ProviderService } from '../../services/provider.service';
 
 @Component({
   selector: 'app-provider-approve-request',

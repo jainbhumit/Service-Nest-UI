@@ -5,10 +5,11 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
-import { JwtPayload, LoginData } from '../../models/auth.model';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
+
+import { AuthService } from '../../services/auth.service';
+import { JwtPayload, LoginData } from '../../models/auth.model';
 import { Role } from '../../config';
 
 function validPassword(control: AbstractControl) {

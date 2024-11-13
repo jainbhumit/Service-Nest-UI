@@ -1,17 +1,17 @@
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { Service } from './../../models/service.model';
 import { Component, inject } from '@angular/core';
-import { ServiceCategory } from '../../models/service.model';
-import { HttpClient } from '@angular/common/http';
-import { HouseholderService } from '../../services/householder.service';
-import { GetServiceImage } from '../../util/image.url';
+import { MessageService } from 'primeng/api';
 import { Route, Router } from '@angular/router';
+
+import { ConfirmCancelRequestComponentComponent } from '../confirm-cancel-request-component/confirm-cancel-request-component.component';
+import { AdminAddCategoryComponent } from '../../admin/admin-add-category/admin-add-category.component';
+
+import { HouseholderService } from '../../services/householder.service';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { AdminService } from '../../services/admin.service';
-import { MessageService } from 'primeng/api';
-import { ConfirmCancelRequestComponentComponent } from '../confirm-cancel-request-component/confirm-cancel-request-component.component';
-import { AdminAddCategoryComponent } from '../../admin/admin-add-category/admin-add-category.component';
+import { ServiceCategory } from '../../models/service.model';
+import { GetServiceImage } from '../../util/image.url';
 
 @Component({
   selector: 'app-householder-home',

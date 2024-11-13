@@ -1,10 +1,9 @@
-import { MessageService } from 'primeng/api';
-import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ServiceCategory } from '../../models/service.model';
+import { MessageService } from 'primeng/api';
+
 import { AdminService } from '../../services/admin.service';
-import { NotExpr } from '@angular/compiler';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -15,7 +14,7 @@ import { AuthService } from '../../services/auth.service';
 export class AdminAddCategoryComponent {
   private adminService = inject(AdminService);
   private messageService = inject(MessageService);
-  private authService = inject(AuthService)
+  private authService = inject(AuthService);
   addCategoryForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required]),
     description: new FormControl('', [Validators.required]),
@@ -32,7 +31,7 @@ export class AdminAddCategoryComponent {
       category_name: this.addCategoryForm.get('name')?.value,
       description: this.addCategoryForm.get('description')?.value,
     };
-    this.authService.isLoading.update(()=>true);
+    this.authService.isLoading.update(() => true);
     this.adminService.addService(body).subscribe({
       next: (response) => {
         this.messageService.add({
@@ -49,8 +48,8 @@ export class AdminAddCategoryComponent {
           detail: err.error.message,
         });
         this.dialogRef.close(false);
-      }
+      },
     });
-    this.authService.isLoading.update(()=>false);
+    this.authService.isLoading.update(() => false);
   }
 }

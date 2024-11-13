@@ -1,14 +1,14 @@
 import { Component, inject } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
-import { HouseholderService } from '../../services/householder.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
-import { ProviderServiceDetail } from '../../models/service.model';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+
+import { ConfirmCancelRequestComponentComponent } from '../../householder/confirm-cancel-request-component/confirm-cancel-request-component.component';
+import { AuthService } from '../../services/auth.service';
+import { ProviderServiceDetail } from '../../models/service.model';
 import { AdminService } from '../../services/admin.service';
 import { UserService } from '../../services/user.service';
-import { ConfirmCancelRequestComponentComponent } from '../../householder/confirm-cancel-request-component/confirm-cancel-request-component.component';
 
 @Component({
   selector: 'app-services',
@@ -33,7 +33,7 @@ export class ServicesComponent {
   apiResponseEnd: boolean = false;
 
   ngOnInit(): void {
-    this.authService.isLoading.update(()=>true);
+    this.authService.isLoading.update(() => true);
     this.userService.fetchCategories().subscribe({
       next: (response) => {
         response.data.map((category) => {
@@ -44,7 +44,7 @@ export class ServicesComponent {
       error: (err) => console.log(err.error.message),
     });
     this.loadServices();
-    this.authService.isLoading.update(()=>false);
+    this.authService.isLoading.update(() => false);
   }
 
   loadServices(): void {
@@ -81,7 +81,7 @@ export class ServicesComponent {
     });
     dialogRef.afterClosed().subscribe((res) => {
       if (res) {
-        this.authService.isLoading.update(()=>true);
+        this.authService.isLoading.update(() => true);
         this.adminService.deactivateAccount(providerId).subscribe({
           next: (response) => {
             this.messageService.add({
@@ -98,7 +98,7 @@ export class ServicesComponent {
             });
           },
         });
-        this.authService.isLoading.update(()=>false);
+        this.authService.isLoading.update(() => false);
       }
     });
   }

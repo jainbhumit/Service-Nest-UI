@@ -1,16 +1,18 @@
 import { Component, inject } from '@angular/core';
-import { ApproveRequests } from '../../models/service.model';
-import { HouseholderService } from '../../services/householder.service';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { MatDialog } from '@angular/material/dialog';
+
 import { EditRequestDialogComponent } from '../edit-request-dialog/edit-request-dialog.component';
 import { ConfirmCancelRequestComponentComponent } from '../confirm-cancel-request-component/confirm-cancel-request-component.component';
 import { AddReviewFormComponent } from '../add-review-form/add-review-form.component';
+import { AcceptServiceDialogComponent } from '../../provider/accept-service-dialog/accept-service-dialog.component';
+
+import { HouseholderService } from '../../services/householder.service';
 import { AdminService } from '../../services/admin.service';
 import { AuthService } from '../../services/auth.service';
-import { AcceptServiceDialogComponent } from '../../provider/accept-service-dialog/accept-service-dialog.component';
+import { ApproveRequests } from '../../models/service.model';
 import { Role } from '../../config';
 
 @Component({
@@ -52,10 +54,14 @@ export class ApproveRequestComponent {
   }
 
   loadApproveRequests(): void {
-    this.authService.isLoading.update(()=>true);
+    this.authService.isLoading.update(() => true);
     if (this.userRole === Role.householder) {
       this.householderService
-        .viewApprovedRequest(this.itemsPerPage, this.currentPage,this.selectedStatus)
+        .viewApprovedRequest(
+          this.itemsPerPage,
+          this.currentPage,
+          this.selectedStatus
+        )
         .subscribe({
           next: (response) => {
             if (response.message === 'No service request found') {
@@ -72,7 +78,11 @@ export class ApproveRequestComponent {
         });
     } else {
       this.adminService
-        .viewApprovedRequest(this.itemsPerPage, this.currentPage,this.selectedStatus)
+        .viewApprovedRequest(
+          this.itemsPerPage,
+          this.currentPage,
+          this.selectedStatus
+        )
         .subscribe({
           next: (response) => {
             if (response.message === 'No service request found') {
@@ -88,7 +98,7 @@ export class ApproveRequestComponent {
           },
         });
     }
-    this.authService.isLoading.update(()=>false);
+    this.authService.isLoading.update(() => false);
   }
 
   onPageChange(newPage: number) {
@@ -111,7 +121,7 @@ export class ApproveRequestComponent {
     });
     dialog.afterClosed().subscribe((response) => {
       if (response) {
-        this.authService.isLoading.update(()=>true);
+        this.authService.isLoading.update(() => true);
         if (this.userRole === Role.householder) {
           this.householderService.cancelServiceRequest(requestId).subscribe({
             next: (response) => {
@@ -149,7 +159,7 @@ export class ApproveRequestComponent {
               }),
           });
         }
-        this.authService.isLoading.update(()=>false);
+        this.authService.isLoading.update(() => false);
       }
     });
   }

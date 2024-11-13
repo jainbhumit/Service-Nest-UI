@@ -1,9 +1,9 @@
-import { UserService } from './../../services/user.service';
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+
+import { UserService } from './../../services/user.service';
 import { ServiceCategory } from '../../models/service.model';
 import { AuthService } from '../../services/auth.service';
-import { HouseholderService } from '../../services/householder.service';
-import { Router } from '@angular/router';
 import { GetServiceImage } from '../../util/image.url';
 
 @Component({

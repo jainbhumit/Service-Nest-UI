@@ -5,10 +5,11 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { MessageService } from 'primeng/api';
+
 import { ForgetPasswordData } from '../../models/auth.model';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { MessageService } from 'primeng/api';
 
 function validPassword(control: AbstractControl) {
   const password = control.value;

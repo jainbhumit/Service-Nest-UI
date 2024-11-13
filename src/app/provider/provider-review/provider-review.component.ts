@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { ProviderReview } from '../../models/service.model';
-import { ProviderService } from '../../services/provider.service';
-import { UserService } from '../../services/user.service';
-import { MatDialog } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+
+import { UserService } from '../../services/user.service';
+import { ProviderService } from '../../services/provider.service';
+import { ProviderReview } from '../../models/service.model';
 import { AuthService } from '../../services/auth.service';
 
 @Component({

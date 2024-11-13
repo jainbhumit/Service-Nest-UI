@@ -1,11 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Booking } from '../../models/service.model';
-import { HouseholderService } from '../../services/householder.service';
 import { Location } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
+
+import { HouseholderService } from '../../services/householder.service';
 import { AdminService } from '../../services/admin.service';
 import { AuthService } from '../../services/auth.service';
+
+import { Booking } from '../../models/service.model';
 import { Role } from '../../config';
 
 @Component({
@@ -35,9 +37,9 @@ export class AcceptedRequestComponent implements OnInit {
       .provider_details as [];
     this.totalCount =
       this.householderService.currentAcceptRequestDetail().provider_details.length;
-    this.authService.isLoading.update(()=>true);
+    this.authService.isLoading.update(() => true);
     this.applyPagination();
-    this.authService.isLoading.update(()=>false);
+    this.authService.isLoading.update(() => false);
   }
 
   applyPagination() {
@@ -58,7 +60,7 @@ export class AcceptedRequestComponent implements OnInit {
         this.householderService.currentAcceptRequestDetail().request_id,
       provider_id: providerId,
     };
-    this.authService.isLoading.update(()=>true);
+    this.authService.isLoading.update(() => true);
     if (this.userRole === Role.householder) {
       this.householderService.approveRequest(body).subscribe({
         next: (response) => {
@@ -94,7 +96,7 @@ export class AcceptedRequestComponent implements OnInit {
         },
       });
     }
-    this.authService.isLoading.update(()=>false);
+    this.authService.isLoading.update(() => false);
     this.location.back();
   }
 

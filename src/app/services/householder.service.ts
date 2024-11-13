@@ -7,7 +7,6 @@ import {
   RequestBody,
   Review,
   Service,
-  ServiceCategory,
 } from '../models/service.model';
 import { ApiUrlWithUser, BaseUrl } from '../config';
 import { UserProfile } from '../models/user.model';

@@ -1,14 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { Booking, ProviderViewRequest } from '../../models/service.model';
-import { HouseholderService } from '../../services/householder.service';
 import { MatDialog } from '@angular/material/dialog';
-import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { EditRequestDialogComponent } from '../../householder/edit-request-dialog/edit-request-dialog.component';
-import { ConfirmCancelRequestComponentComponent } from '../../householder/confirm-cancel-request-component/confirm-cancel-request-component.component';
-import { ProviderService } from '../../services/provider.service';
+
+import { ProviderViewRequest } from '../../models/service.model';
 import { AcceptServiceDialogComponent } from '../accept-service-dialog/accept-service-dialog.component';
+import { ProviderService } from '../../services/provider.service';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 

@@ -1,14 +1,13 @@
 import { Component, inject } from '@angular/core';
 import {
-  FormBuilder,
   FormControl,
   FormGroup,
-  ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
+
 import { AuthService } from '../../services/auth.service';
 import { SignupData } from '../../models/auth.model';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup',

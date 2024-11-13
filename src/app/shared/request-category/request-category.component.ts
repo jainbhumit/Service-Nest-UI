@@ -1,20 +1,21 @@
-import { ProviderServiceDetail } from './../../models/service.model';
-import { AddServiceFormComponent } from './../../provider/add-service-form/add-service-form.component';
-import { UserService } from './../../services/user.service';
-import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
-import { BaseUrl, Role } from '../../config';
-import { ProviderDetail, ServiceCategory } from '../../models/service.model';
-import { GetServiceImage } from '../../util/image.url';
 import { Router } from '@angular/router';
-import { HouseholderService } from '../../services/householder.service';
-import { MatDialog } from '@angular/material/dialog';
-import { RequestServiceFormComponent } from '../../householder/request-service-form/request-service-form.component';
-import { Location } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
-import { ProviderService } from '../../services/provider.service';
 import { MessageService } from 'primeng/api';
+import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+
+import { AddServiceFormComponent } from './../../provider/add-service-form/add-service-form.component';
+import { RequestServiceFormComponent } from '../../householder/request-service-form/request-service-form.component';
 import { ConfirmCancelRequestComponentComponent } from '../../householder/confirm-cancel-request-component/confirm-cancel-request-component.component';
 import { AcceptServiceDialogComponent } from '../../provider/accept-service-dialog/accept-service-dialog.component';
+
+import { UserService } from './../../services/user.service';
+import { GetServiceImage } from '../../util/image.url';
+import { HouseholderService } from '../../services/householder.service';
+import { AuthService } from '../../services/auth.service';
+import { ProviderService } from '../../services/provider.service';
+import { ProviderDetail, ServiceCategory } from '../../models/service.model';
+import { Role } from '../../config';
+import { ProviderServiceDetail } from './../../models/service.model';
 
 @Component({
   selector: 'app-householder-category',

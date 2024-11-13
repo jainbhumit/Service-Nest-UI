@@ -5,9 +5,10 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
-import { TokenKey } from '../config';
 import { Router } from '@angular/router';
 import { inject } from '@angular/core';
+
+import { TokenKey } from '../config';
 
 export function authInterceptor(
   req: HttpRequest<any>,

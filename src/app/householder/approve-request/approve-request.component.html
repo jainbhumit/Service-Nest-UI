@@ -53,8 +53,7 @@
               <button class="btn cancel" pTooltip="cancel" tooltipPosition="top"
                 (click)="cancelRequest(request.request_id)">❌</button>
               @if (userRole==="Householder") {
-              <span class="arrow"
-                pTooltip=" add review" tooltipPosition="top"
+              <span class="arrow" pTooltip=" add review" tooltipPosition="top"
                 (click)="LeaveReview((request.provider_details && request.provider_details[0] )?.service_provider_id,request.service_id)">💬</span>
               }
             </td>

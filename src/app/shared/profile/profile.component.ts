@@ -1,11 +1,11 @@
 import { MessageService } from 'primeng/api';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { UserService } from '../../services/user.service';
-import { UpdateProfile, UserProfile } from '../../models/user.model';
 import { Router } from '@angular/router';
-import { LocalizedString } from '@angular/compiler';
 import { Location } from '@angular/common';
+
+import { UpdateProfile, UserProfile } from '../../models/user.model';
+import { UserService } from '../../services/user.service';
 import { Role } from '../../config';
 import { AuthService } from '../../services/auth.service';
 

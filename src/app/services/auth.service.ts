@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
+
 import { BaseUrl, Role, TokenKey } from '../config';
 import {
   ForgetPasswordData,
   LoginData,
   SignupData,
 } from '../models/auth.model';
-import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',

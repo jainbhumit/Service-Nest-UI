@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
-import jwt_decode, { jwtDecode, JwtPayload } from 'jwt-decode';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { AuthService } from '../services/auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
@@ -36,9 +36,9 @@ export const authGuard: CanActivateFn = (route, state) => {
       }
     } catch (error) {
       console.error('Error decoding token:', error);
-      return router.parseUrl('/login'); // Redirect to login if decoding fails
+      return router.parseUrl('/login'); 
     }
   }
-  // Redirect to login if no token is found
+  
   return router.parseUrl('/login');
 };
