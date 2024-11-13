@@ -1,12 +1,17 @@
 <div class="services-container">
-  <p-toast/>
+  <p-toast />
   <header class="services-header">
     <h1>SERVICE NEST</h1>
     <button class="back-btn" (click)="onBack()">←</button>
   </header>
 
   <div class="view-request">
-    <h2>Approved Request</h2>
+    <div class="table-header">
+      <h2>Approved Request</h2>
+      <button class="refresh-btn" (click)="onRefresh()">
+        <i class="fas fa-sync-alt">🔃</i>
+      </button>
+    </div>
     <div class="filter-container">
       <label for="statusFilter">Filter:</label>
       <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="onStatusChange()">
@@ -16,6 +21,7 @@
       </select>
     </div>
     <div class="table-container">
+
       <table>
         <thead>
           <tr>
@@ -29,25 +35,31 @@
           </tr>
         </thead>
         <tbody>
+          @if(filteredRequests.length
+          <=0) { <app-no-data-found />
+          }
           @for(request of filteredRequests;track $index) {
           <tr>
             <td>{{request.service_name || 'N/A'}}</td>
-            <td>{{formatDate(request.scheduled_time)}}</td>
+            <td>{{request.scheduled_time | datetime}}</td>
             <td>{{(request.provider_details && request.provider_details[0] )?.name}}</td>
             <td>{{(request.provider_details && request.provider_details[0] )?.contact}}</td>
             <td>{{(request.provider_details && request.provider_details[0] )?.address}}</td>
             <td>
-                ₹{{(request.provider_details && request.provider_details[0] )?.price}}
+              ₹{{(request.provider_details && request.provider_details[0] )?.price}}
             </td>
             @if(request.status!='Cancelled') {
-              <td class="actions">
-                <button class="btn cancel" (click)="cancelRequest(request.request_id)">❌</button>
-                @if (userRole==="Householder") {
-                  <span class="arrow" (click)="LeaveReview((request.provider_details && request.provider_details[0] )?.service_provider_id,request.service_id)">💬</span>
-                }
-              </td>
+            <td class="actions">
+              <button class="btn cancel" pTooltip="cancel" tooltipPosition="top"
+                (click)="cancelRequest(request.request_id)">❌</button>
+              @if (userRole==="Householder") {
+              <span class="arrow"
+                pTooltip=" add review" tooltipPosition="top"
+                (click)="LeaveReview((request.provider_details && request.provider_details[0] )?.service_provider_id,request.service_id)">💬</span>
+              }
+            </td>
             }
-            
+
           </tr>
           }
         </tbody>

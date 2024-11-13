@@ -1,5 +1,10 @@
-import { ProviderApproveRequest, ProviderReview, ProviderViewRequest, Service } from './../models/service.model';
-import { HttpClient } from '@angular/common/http';
+import {
+  ProviderApproveRequest,
+  ProviderReview,
+  ProviderViewRequest,
+  Service,
+} from './../models/service.model';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { ApiUrlWithProvider, ApiUrlWithUser, BaseUrl } from '../config';
@@ -13,7 +18,6 @@ import {
   providedIn: 'root',
 })
 export class ProviderService {
- 
   serviceDetail: ProviderServiceDetail[] = [];
   apiUrl: string = `${BaseUrl}${ApiUrlWithProvider}`;
   private http = inject(HttpClient);
@@ -35,26 +39,27 @@ export class ProviderService {
       );
   }
 
-  addService(
-    body: AddService
-  ): Observable<{
+  addService(body: AddService): Observable<{
     status: string;
     message: string;
     data: { service_id: string };
   }> {
-    return this.http.post<{
-      status: string;
-      message: string;
-      data: { service_id: string };
-    }>(`${this.apiUrl}/service`, body).pipe<{
-      status: string;
-      message: string;
-      data: { service_id: string };
-    }>(
-      catchError((error) => {
-        console.error("Error adding service:", error);
-        return throwError(() => error);
-      }));
+    return this.http
+      .post<{
+        status: string;
+        message: string;
+        data: { service_id: string };
+      }>(`${this.apiUrl}/service`, body)
+      .pipe<{
+        status: string;
+        message: string;
+        data: { service_id: string };
+      }>(
+        catchError((error) => {
+          console.error('Error adding service:', error);
+          return throwError(() => error);
+        })
+      );
   }
 
   updateService(
@@ -75,61 +80,86 @@ export class ProviderService {
     );
   }
 
-  viewServiceRequest(itemsPerPage:number , currentPage: number):Observable<{
+  viewServiceRequest(
+    itemsPerPage: number,
+    currentPage: number,
+    selectedFilter: string
+  ): Observable<{
     status: string;
     message: string;
-    data: ProviderViewRequest[]; 
+    data: ProviderViewRequest[];
   }> {
-    const params = {
-      limit : itemsPerPage,
-      offset: (currentPage-1) * itemsPerPage
+    let params = new HttpParams()
+      .set('limit', itemsPerPage)
+      .set('offset', (currentPage - 1) * itemsPerPage);
+
+    if (selectedFilter) {
+      params = params.set('serviceId', selectedFilter);
     }
     return this.http.get<{
-    status: string;
-    message: string;
-    data: ProviderViewRequest[]; 
-    }>(`${this.apiUrl}/service/requests`,{params})
+      status: string;
+      message: string;
+      data: ProviderViewRequest[];
+    }>(`${this.apiUrl}/service/requests`, { params });
   }
 
-  acceptServiceRequest(body:{request_id:string,price:string}):Observable<{
+  acceptServiceRequest(body: {
+    request_id: string;
+    price: string;
+  }): Observable<{
     status: string;
     message: string;
   }> {
     return this.http.post<{
+      status: string;
+      message: string;
+    }>(`${this.apiUrl}/service/requests`, body);
+  }
+
+  viewApprovedRequest(
+    itemsPerPage: number,
+    currentPage: number,
+    selectedStatus:string
+  ): Observable<{
     status: string;
     message: string;
-    }>(`${this.apiUrl}/service/requests`,body)
+    data: ProviderApproveRequest[];
+  }> {
+    let params = new HttpParams()
+    .set('limit', itemsPerPage)
+    .set('offset', ((currentPage - 1) * itemsPerPage));
+
+  if (selectedStatus) {
+    params = params.set('order', selectedStatus);
   }
 
-  viewApprovedRequest(itemsPerPage: number, currentPage: number):Observable<{
-    status:string,
-    message:string,
-    data:ProviderApproveRequest[]
-  }> {
-    const params = {
-      limit: itemsPerPage,
-      offset: (currentPage-1) * itemsPerPage
-    }
     return this.http.get<{
-      status:string,
-      message:string,
-      data:ProviderApproveRequest[]
-    }>(`${BaseUrl}${ApiUrlWithUser}/service/request/approved`,{params})
+      status: string;
+      message: string;
+      data: ProviderApproveRequest[];
+    }>(`${BaseUrl}${ApiUrlWithUser}/service/request/approved`, { params });
   }
 
-  getReview(itemsPerPage: number, currentPage: number):Observable<{
-    status:string,
-    message:string,
-    data:ProviderReview[]
+  getReview(
+    itemsPerPage: number,
+    currentPage: number,
+    selectedStatus:string
+  ): Observable<{
+    status: string;
+    message: string;
+    data: ProviderReview[];
   }> {
-    const params = {
-      limit: itemsPerPage,
-      offset: (currentPage-1) * itemsPerPage
-    }
+    let params = new HttpParams()
+    .set('limit', itemsPerPage)
+    .set('offset', ((currentPage - 1) * itemsPerPage));
+
+  if (selectedStatus) {
+    params = params.set('serviceId', selectedStatus);
+  }
     return this.http.get<{
-      status:string,
-      message:string,
-      data:ProviderReview[]
-    }>(`${BaseUrl}${ApiUrlWithProvider}/reviews`,{params})
+      status: string;
+      message: string;
+      data: ProviderReview[];
+    }>(`${BaseUrl}${ApiUrlWithProvider}/reviews`, { params });
   }
 }

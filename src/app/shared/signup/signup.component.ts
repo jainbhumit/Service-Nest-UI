@@ -1,5 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { SignupData } from '../../models/auth.model';
 import { Router } from '@angular/router';
@@ -7,28 +13,30 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
-  styleUrl: './signup.component.scss'
+  styleUrl: './signup.component.scss',
 })
 export class SignupComponent {
   private authService = inject(AuthService);
-  private router:Router = inject(Router) 
+  private router: Router = inject(Router);
   errMessage: string = '';
 
   signupForm: FormGroup = new FormGroup({
-    username: new FormControl('',[Validators.required]),
-    email:new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('',
-      [
-        Validators.required,
-        Validators.minLength(8),
-        Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/)
-      ]
-    ),
+    username: new FormControl('', [Validators.required]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(8),
+      Validators.pattern(
+        /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/
+      ),
+    ]),
     role: new FormControl('', Validators.required),
     address: new FormControl('', Validators.required),
-    contact: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{10,}$/)]),
-    securityAnswer:new FormControl('', Validators.required)
-    
+    contact: new FormControl('', [
+      Validators.required,
+      Validators.pattern(/^[0-9]{10,}$/),
+    ]),
+    securityAnswer: new FormControl('', Validators.required),
   });
 
   onPasswordInput() {
@@ -39,7 +47,8 @@ export class SignupComponent {
       } else if (password.errors['minlength']) {
         this.errMessage = 'Password must be at least 8 characters long.';
       } else if (password.errors['pattern']) {
-        this.errMessage = 'Password must contain an uppercase letter, a symbol, and a digit.';
+        this.errMessage =
+          'Password must contain an uppercase letter, a symbol, and a digit.';
       }
     } else {
       this.errMessage = '';
@@ -55,21 +64,21 @@ export class SignupComponent {
         role: this.signupForm.get('role')?.value,
         address: this.signupForm.get('address')?.value,
         contact: this.signupForm.get('contact')?.value,
-        security_answer: this.signupForm.get('securityAnswer')?.value
-      }
+        security_answer: this.signupForm.get('securityAnswer')?.value,
+      };
+      this.authService.isLoading.update(()=>true);
       this.authService.signup(user).subscribe({
-        next:(response) => {
-          if (response.status=='Success') {
-            this.router.navigate(['/login'])
-            return
+        next: (response) => {
+          if (response.status == 'Success') {
+            this.router.navigate(['/login']);
+            return;
           }
         },
-        error:(err) => this.errMessage=err.error.message
-      })
-      console.log("Form Submitted!", this.signupForm.value);
+        error: (err) => (this.errMessage = err.error.message),
+      });
+      this.authService.isLoading.update(()=>false);
     } else {
-      this.signupForm.markAllAsTouched(); 
+      this.signupForm.markAllAsTouched();
     }
   }
-  
 }

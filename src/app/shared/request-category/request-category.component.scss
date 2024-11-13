@@ -86,7 +86,7 @@
   overflow-y: auto;
   
   .nav-item {
-    padding: 1rem 1.5rem;
+    padding: 1rem 1rem;
     border: none;
     border-radius: 10px;
     background-color: #703726;
@@ -204,11 +204,12 @@
     
       .category-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fit, 280px);
+        gap: 10px;
       }
     
       .category-card {
+        width: 280px;
         background: transparent;
         padding: 15px;
         border-radius: 5px;

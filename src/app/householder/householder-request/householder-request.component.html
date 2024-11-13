@@ -1,12 +1,17 @@
 <div class="services-container">
-  <p-toast/>
+  <p-toast />
   <header class="services-header">
     <h1>SERVICE NEST</h1>
     <button class="back-btn" (click)="onBack()">←</button>
   </header>
 
   <div class="view-request">
-    <h2>Requests</h2>
+    <div class="table-header">
+      <h2>Requests</h2>
+      <button class="refresh-btn" (click)="onRefresh()">
+        <i class="fas fa-sync-alt">🔃</i>
+      </button>
+    </div>
     <div class="filter-container">
       <label for="statusFilter">Filter by Status:</label>
       <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="onStatusChange()">
@@ -31,6 +36,9 @@
           </tr>
         </thead>
         <tbody>
+          @if(filteredBookings.length
+          <=0) { <app-no-data-found />
+          }
           @for(booking of filteredBookings;track $index) {
           <tr>
             <td>{{booking.request_id}}</td>
@@ -44,16 +52,19 @@
               </span>
             </td>
             @if(booking.status!='Cancelled') {
-              <td class="actions">
-                <button class="btn update" (click)="updateRequest(booking.request_id,booking.scheduled_time)">✏️</button>
-                <button class="btn cancel" (click)="cancelRequest(booking.request_id)">❌</button>
-                @if (booking.status === 'Accepted') {
-                <span class="arrow" (click)="navigateToDetails(booking.provider_details,booking.request_id)">→</span>
-                }
-  
-              </td>
+            <td class="actions">
+              <button class="btn update" pTooltip="update" tooltipPosition="top"
+                (click)="updateRequest(booking.request_id,booking.scheduled_time)">✏️</button>
+              <button class="btn cancel" pTooltip="cancel" tooltipPosition="top"
+                (click)="cancelRequest(booking.request_id)">❌</button>
+              @if (booking.status === 'Accepted') {
+              <span class="arrow" pTooltip="accepted providers" tooltipPosition="top"
+                (click)="navigateToDetails(booking.provider_details,booking.request_id)">→</span>
+              }
+
+            </td>
             }
-            
+
           </tr>
           }
         </tbody>

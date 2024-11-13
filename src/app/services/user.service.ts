@@ -29,15 +29,14 @@ export class UserService {
     }>(`${this.apiUrl}/profile`);
   }
 
-  updateProfile(data:UpdateProfile):Observable<{
+  updateProfile(data: UpdateProfile): Observable<{
     status: string;
     message: string;
   }> {
     return this.http.put<{
       status: string;
       message: string;
-    }>(`${this.apiUrl}/profile`,data);
-
+    }>(`${this.apiUrl}/profile`, data);
   }
 
   fetchCategories(): Observable<{

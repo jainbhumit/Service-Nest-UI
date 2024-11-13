@@ -55,7 +55,24 @@
   background-color: #f5f5f5;
   border-radius: 8px;
   width: 100%;
+
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+    background-color: #f5f5f5;
+  }
   
+  .refresh-btn {
+    padding: 0.75rem 1.5rem;
+    background-color: #f5f5f5;
+    color: blue;
+    border: none;
+    font-weight: bolder;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+  }
 
   .filter-container {
     display: flex;

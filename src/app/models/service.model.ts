@@ -120,4 +120,3 @@ export type ProviderReview = {
   comments: string;
   review_date: string;
 };
-

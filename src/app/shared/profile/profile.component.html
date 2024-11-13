@@ -6,81 +6,81 @@
 
   <nav class="sidebar">
     <button class="nav-item" [routerLink]="'/profile'">PROFILE</button>
-      <button class="nav-item" [routerLink]="getRouterLink('requests')">SERVICE REQUEST</button>
-      <button class="nav-item" [routerLink]="getRouterLink('approve')">APPROVE REQUEST</button>
-      @if (userRole==='ServiceProvider') {
-        <button class="nav-item" [routerLink]="getRouterLink('review')">REVIEW</button>
-      }@else if(userRole==='Householder'){
-        <button class="nav-item" [routerLink]="getRouterLink('approve')">REVIEW</button>
-      }@else{
-        <button class="nav-item" [routerLink]="getRouterLink('services')">SERVICES</button>
+    <button class="nav-item" [routerLink]="getRouterLink('requests')">SERVICE REQUESTS</button>
+    <button class="nav-item" [routerLink]="getRouterLink('approve')">APPROVED REQUESTS</button>
+    @if (userRole==='ServiceProvider') {
+    <button class="nav-item" [routerLink]="getRouterLink('review')">REVIEWS</button>
+    }@else if(userRole==='Householder'){
+    <button class="nav-item" [routerLink]="getRouterLink('approve')">REVIEWS</button>
+    }@else{
+    <button class="nav-item" [routerLink]="getRouterLink('services')">SERVICES</button>
 
-      }
+    }
 
   </nav>
 
   <form class="login-form" [formGroup]="updateForm" (ngSubmit)="UpdateProfile()">
-  <div class="form-group">
-    <div class="input-wrapper">
-      <input type="text" placeholder="Name" required  formControlName="name">
-    </div>
-  
-  <div class="form-group">
-    <div class="input-wrapper">
-      @if (!updateForm.get('email')?.pristine && updateForm.get('email')?.invalid) {
-        <i class="fas fa-user">*</i>
-      }
-      <input type="email" placeholder="Email" required formControlName="email">
-    </div>
-  </div>
-  @if (update) {
     <div class="form-group">
       <div class="input-wrapper">
-        @if (!updateForm.get('password')?.pristine && updateForm.get('password')?.invalid) {
-          <i class="fas fa-user">*</i>
-        }
-        <input type="password" placeholder="Password" required formControlName="password" (input)="onPasswordInput()">
+        <input type="text" placeholder="Name" required formControlName="name">
       </div>
-    </div>
-  }
 
-  <div class="form-group">
-    <div class="input-wrapper">
-      <!-- @if (!password?.pristine && password?.invalid) {
+      <div class="form-group">
+        <div class="input-wrapper">
+          @if (!updateForm.get('email')?.pristine && updateForm.get('email')?.invalid) {
+          <i class="fas fa-user">*</i>
+          }
+          <input type="email" placeholder="Email" required formControlName="email">
+        </div>
+      </div>
+      @if (update) {
+      <div class="form-group">
+        <div class="input-wrapper">
+          @if (!updateForm.get('password')?.pristine && updateForm.get('password')?.invalid) {
+          <i class="fas fa-user">*</i>
+          }
+          <input type="password" placeholder="Password" required formControlName="password" (input)="onPasswordInput()">
+        </div>
+      </div>
+      }
+
+      <div class="form-group">
+        <div class="input-wrapper">
+          <!-- @if (!password?.pristine && password?.invalid) {
         <i class="fas fa-user">*</i>
       } -->
-      <input type="text" placeholder="Role" required formControlName="role">
-    </div>
-  </div>
+          <input type="text" placeholder="Role" required formControlName="role">
+        </div>
+      </div>
 
-  <div class="form-group">
-    <div class="input-wrapper">
-      @if (!updateForm.get('address')?.pristine && updateForm.get('address')?.invalid) {
-        <i class="fas fa-user">*</i>
+      <div class="form-group">
+        <div class="input-wrapper">
+          @if (!updateForm.get('address')?.pristine && updateForm.get('address')?.invalid) {
+          <i class="fas fa-user">*</i>
+          }
+          <input type="text" placeholder="Address" required formControlName="address">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="input-wrapper">
+          @if (!updateForm.get('contact')?.pristine && updateForm.get('contact')?.invalid) {
+          <i class="fas fa-user">*</i>
+          }
+          <input type="tel" placeholder="Contact" required formControlName="contact">
+        </div>
+      </div>
+      @if (errorMessage!='') {
+      <div class="err">
+        <span [ngStyle]="{'color':'red'}">{{errorMessage}}</span>
+      </div>
       }
-      <input type="text" placeholder="Address" required formControlName="address">
-    </div>
-  </div>
+      <div class="form-actions">
+        @if (update) {
+        <button class="login-button" (click)="Update()">Update</button>
+        }@else {
+        <button type="submit" class="login-button">Update Profile</button>
 
-  <div class="form-group">
-    <div class="input-wrapper">
-      @if (!updateForm.get('contact')?.pristine && updateForm.get('contact')?.invalid) {
-        <i class="fas fa-user">*</i>
-      }
-      <input type="tel" placeholder="Contact" required formControlName="contact">
+        }
+      </div>
     </div>
-  </div>
-  @if (errorMessage!='') {
-    <div class="err">
-      <span [ngStyle]="{'color':'red'}">{{errorMessage}}</span>
-  </div>
-  }
-  <div class="form-actions">
-    @if (update) {
-      <button class="login-button" (click)="Update()">Update</button>
-    }@else {
-      <button type="submit" class="login-button">Update Profile</button>
-
-    }
-  </div>  
-</div>

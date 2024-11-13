@@ -33,6 +33,7 @@ export class ServicesComponent {
   apiResponseEnd: boolean = false;
 
   ngOnInit(): void {
+    this.authService.isLoading.update(()=>true);
     this.userService.fetchCategories().subscribe({
       next: (response) => {
         response.data.map((category) => {
@@ -43,6 +44,7 @@ export class ServicesComponent {
       error: (err) => console.log(err.error.message),
     });
     this.loadServices();
+    this.authService.isLoading.update(()=>false);
   }
 
   loadServices(): void {
@@ -74,21 +76,31 @@ export class ServicesComponent {
   }
 
   deactivateAccount(providerId: string) {
-   const dialogRef = this.dialog.open(ConfirmCancelRequestComponentComponent,{
-    width:'450px'
-   })
-   dialogRef.afterClosed().subscribe((res) =>{
-    if(res) {
-      this.adminService.deactivateAccount(providerId).subscribe({
-        next:(response) => {
-          this.messageService.add({severity:'success',summary:'Success',detail:response.message});
-        },
-        error:(err) =>{
-          this.messageService.add({severity:'error',summary:'Error',detail:err.error.message});
-        }
-      })
-    }
-   })
+    const dialogRef = this.dialog.open(ConfirmCancelRequestComponentComponent, {
+      width: '450px',
+    });
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) {
+        this.authService.isLoading.update(()=>true);
+        this.adminService.deactivateAccount(providerId).subscribe({
+          next: (response) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: response.message,
+            });
+          },
+          error: (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err.error.message,
+            });
+          },
+        });
+        this.authService.isLoading.update(()=>false);
+      }
+    });
   }
   onPageChange(newPage: number) {
     this.currentPage = newPage;

@@ -2,27 +2,27 @@
   <div class="login-box">
     <div class="login-content">
       <h1 class="logo">SERVICE NEST</h1>
-      
+
       <form class="login-form" [formGroup]="loginForm" (ngSubmit)="Login()">
         <div class="form-group">
           <div class="input-wrapper">
             @if (!email?.pristine && email?.invalid) {
-              <i class="fas fa-user">*</i>
+            <i class="fas fa-user">*</i>
             }
-            <input type="text" placeholder="Email" required  formControlName="email">
+            <input type="text" placeholder="Email" required formControlName="email">
           </div>
         </div>
 
         <div class="form-group">
           <div class="input-wrapper">
             @if (!password?.pristine && password?.invalid) {
-              <i class="fas fa-user">*</i>
+            <i class="fas fa-user">*</i>
             }
             <input type="password" placeholder="Password" required formControlName="password">
           </div>
           @if (errorMessage!='') {
-            <div class="err">
-              <span [ngStyle]="{'color':'red'}">{{errorMessage}}</span>
+          <div class="err">
+            <span [ngStyle]="{'color':'red'}">{{errorMessage}}</span>
           </div>
           }
         </div>
@@ -33,7 +33,7 @@
         </div>
 
         <div class="signup-prompt">
-          Don't have account 
+          Don't have account
           <a href="/signup" class="signup-link">Signup</a>
         </div>
       </form>

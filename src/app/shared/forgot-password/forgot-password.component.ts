@@ -57,10 +57,15 @@ export class ForgotPasswordComponent {
         security_answer: this.securityAnswer?.value as string,
         password: this.password?.value as string,
       };
+      this.authService.isLoading.update(()=>true);
       this.authService.forgetPassword(updatedData).subscribe({
         next: (response) => {
           if (response) {
-            this.messageService.add({severity:'success',summary:'Success',detail:"password update succesfully"});
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'password update succesfully',
+            });
             this.router.navigate(['/login']);
           }
         },
@@ -68,6 +73,7 @@ export class ForgotPasswordComponent {
           this.errorMessage = error.error.message;
         },
       });
+      this.authService.isLoading.update(()=>false);
     } else {
       this.forgotForm.markAllAsTouched();
     }

@@ -16,14 +16,14 @@ import { Role } from '../../config';
 @Component({
   selector: 'app-approve-request',
   templateUrl: './approve-request.component.html',
-  styleUrl: './approve-request.component.scss'
+  styleUrl: './approve-request.component.scss',
 })
 export class ApproveRequestComponent {
   approveRequests: ApproveRequests[] = [];
   filteredRequests: ApproveRequests[] = [];
   selectedStatus: string = '';
-  userRole:string|undefined;
-  private adminService =inject(AdminService);
+  userRole: string | undefined;
+  private adminService = inject(AdminService);
   private authService = inject(AuthService);
   private householderService = inject(HouseholderService);
   private dialog = inject(MatDialog);
@@ -37,83 +37,58 @@ export class ApproveRequestComponent {
 
   ngOnInit(): void {
     this.userRole = this.authService.userRole();
-    if(this.userRole==='Admin') {
-      const dialogRef = this.dialog.open(AcceptServiceDialogComponent,{
-        width:'450px',
-      })
-      dialogRef.afterClosed().subscribe((res) =>{
-        if(res) {
+    if (this.userRole === 'Admin') {
+      const dialogRef = this.dialog.open(AcceptServiceDialogComponent, {
+        width: '450px',
+      });
+      dialogRef.afterClosed().subscribe((res) => {
+        if (res) {
           this.loadApproveRequests();
         }
-      })
-    }else {
+      });
+    } else {
       this.loadApproveRequests();
     }
   }
 
   loadApproveRequests(): void {
-    if(this.userRole===Role.householder) {
+    this.authService.isLoading.update(()=>true);
+    if (this.userRole === Role.householder) {
       this.householderService
-      .viewApprovedRequest(this.itemsPerPage, this.currentPage)
-      .subscribe({
-        next: (response) => {
-          if (response.message === 'No service request found') {
-            console.log('No service Request Found');
-            this.approveRequests = [];
-          } else {
-            this.approveRequests = response.data;
-            this.applyStatusFilter();
-            this.apiResponseEnd = response.data.length < this.itemsPerPage;
-          }
-        },
-        error: (err) => {
-          console.log(err.error.message);
-        },
-      });
-    }else{
-      this.adminService
-      .viewApprovedRequest(this.itemsPerPage, this.currentPage)
-      .subscribe({
-        next: (response) => {
-          if (response.message === 'No service request found') {
-            console.log('No service Request Found');
-            this.approveRequests = [];
-          } else {
-            this.approveRequests = response.data;
-            this.applyStatusFilter();
-            this.apiResponseEnd = response.data.length < this.itemsPerPage;
-          }
-        },
-        error: (err) => {
-          console.log(err.error.message);
-        },
-      });
-    }
-   
-  }
-  applyStatusFilter(): void {
-    console.log(this.selectedStatus,this.approveRequests);
-    if (this.selectedStatus == 'New to Old') {
-      this.filteredRequests = this.approveRequests.sort((a, b) => {
-        const dateA = new Date(a.requested_time).getTime();
-        const dateB = new Date(b.requested_time).getTime();
-        return dateB - dateA;
-      })
-    } else if (this.selectedStatus == 'Old to New') {
-      this.filteredRequests = this.approveRequests.sort((a, b) => {
-        const dateA = new Date(a.requested_time).getTime();
-        const dateB = new Date(b.requested_time).getTime();
-        return dateA - dateB;
-      })
+        .viewApprovedRequest(this.itemsPerPage, this.currentPage,this.selectedStatus)
+        .subscribe({
+          next: (response) => {
+            if (response.message === 'No service request found') {
+              console.log('No service Request Found');
+              this.filteredRequests = [];
+            } else {
+              this.filteredRequests = response.data;
+              this.apiResponseEnd = response.data.length < this.itemsPerPage;
+            }
+          },
+          error: (err) => {
+            console.log(err.error.message);
+          },
+        });
     } else {
-      this.filteredRequests = this.approveRequests
+      this.adminService
+        .viewApprovedRequest(this.itemsPerPage, this.currentPage,this.selectedStatus)
+        .subscribe({
+          next: (response) => {
+            if (response.message === 'No service request found') {
+              console.log('No service Request Found');
+              this.approveRequests = [];
+            } else {
+              this.approveRequests = response.data;
+              this.apiResponseEnd = response.data.length < this.itemsPerPage;
+            }
+          },
+          error: (err) => {
+            console.log(err.error.message);
+          },
+        });
     }
-  }
-  formatDate(dateString: string): string {
-    dateString = dateString.replace('T', ' ');
-    dateString = dateString.replace('Z', '');
-    const newDateTime: string = this.datePipe.transform(dateString, 'M/d/yyyy, h:mm:ss a') || '';
-    return newDateTime;
+    this.authService.isLoading.update(()=>false);
   }
 
   onPageChange(newPage: number) {
@@ -125,58 +100,80 @@ export class ApproveRequestComponent {
   updateRequest(requestId: string, scheduleTime: string) {
     const dialog = this.dialog.open(EditRequestDialogComponent, {
       width: '450px',
-      data: { request_id: requestId, scheduled_time: scheduleTime }
+      data: { request_id: requestId, scheduled_time: scheduleTime },
     });
   }
   cancelRequest(requestId: string) {
     console.log('On Cancel');
     const dialog = this.dialog.open(ConfirmCancelRequestComponentComponent, {
       width: '500px',
-      data: { request_id: requestId }
+      data: { request_id: requestId },
     });
     dialog.afterClosed().subscribe((response) => {
       if (response) {
-        if(this.userRole===Role.householder) {
+        this.authService.isLoading.update(()=>true);
+        if (this.userRole === Role.householder) {
           this.householderService.cancelServiceRequest(requestId).subscribe({
             next: (response) => {
               if (response.message == 'Request cancelled successfully') {
-                this.messageService.add({ severity: 'success', summary: 'Success', detail: response.message });
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Success',
+                  detail: response.message,
+                });
               }
             },
-            error: (err) => this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message })
+            error: (err) =>
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: err.error.message,
+              }),
           });
-        }else {
+        } else {
           this.adminService.cancelServiceRequest(requestId).subscribe({
             next: (response) => {
               if (response.message == 'Request cancelled successfully') {
-                this.messageService.add({ severity: 'success', summary: 'Success', detail: response.message });
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Success',
+                  detail: response.message,
+                });
               }
             },
-            error: (err) => this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message })
+            error: (err) =>
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: err.error.message,
+              }),
           });
         }
-     
+        this.authService.isLoading.update(()=>false);
       }
-    })
+    });
   }
 
   onBack() {
-    if(this.userRole===Role.householder) {
+    if (this.userRole === Role.householder) {
       this.router.navigate(['/householder/home']);
-    }else {
-    this.router.navigate(['/admin/home']);
-
+    } else {
+      this.router.navigate(['/admin/home']);
     }
   }
 
-  onStatusChange() {
-    this.applyStatusFilter();
+  onRefresh() {
+    this.loadApproveRequests();
   }
 
-  LeaveReview(providerId:string|undefined, serviceId:string) {
-    const dialogRef = this.dialog.open(AddReviewFormComponent,{
+  onStatusChange() {
+    this.loadApproveRequests();
+  }
+
+  LeaveReview(providerId: string | undefined, serviceId: string) {
+    const dialogRef = this.dialog.open(AddReviewFormComponent, {
       width: '450px',
-      data: {service_id:serviceId,provider_id:providerId}
-    })
+      data: { service_id: serviceId, provider_id: providerId },
+    });
   }
 }

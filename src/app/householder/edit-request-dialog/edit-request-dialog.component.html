@@ -2,26 +2,17 @@
 <mat-dialog-content>
   <mat-form-field>
     <mat-label>Scheduled Time</mat-label>
-    <input
-      matInput
-      [formControl]="scheduledTime"
-      type="datetime-local"
-      required
-    />
+    <input matInput [formControl]="scheduledTime" type="datetime-local" required />
     @if (scheduledTime.hasError('required')) {
-      <mat-error >
-        Scheduled Time is required.
-      </mat-error>
+    <mat-error>
+      Scheduled Time is required.
+    </mat-error>
     }
   </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button (click)="onCancel()">Cancel</button>
-  <button
-    mat-button
-    (click)="onConfirm()"
-    [disabled]="!scheduledTime.valid"
-  >
+  <button mat-button (click)="onConfirm()" [disabled]="!scheduledTime.valid">
     Save
   </button>
 </mat-dialog-actions>

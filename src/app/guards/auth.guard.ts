@@ -10,9 +10,15 @@ export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   if (token) {
     try {
-      const decodedToken = jwtDecode<JwtPayload>(token) as unknown as JwtPayload;
+      const decodedToken = jwtDecode<JwtPayload>(
+        token
+      ) as unknown as JwtPayload;
 
-      if (decodedToken && typeof decodedToken === 'object' && 'role' in decodedToken) {
+      if (
+        decodedToken &&
+        typeof decodedToken === 'object' &&
+        'role' in decodedToken
+      ) {
         const userRole = (decodedToken as any).role;
         const url = state.url;
         authService.userRole.set(userRole);
@@ -28,14 +34,11 @@ export const authGuard: CanActivateFn = (route, state) => {
 
         return router.parseUrl('/unauthorized');
       }
-    }
-    catch (error) {
-      console.error("Error decoding token:", error);
+    } catch (error) {
+      console.error('Error decoding token:', error);
       return router.parseUrl('/login'); // Redirect to login if decoding fails
     }
-
   }
   // Redirect to login if no token is found
   return router.parseUrl('/login');
 };
-

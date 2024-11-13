@@ -1,18 +1,24 @@
 import { ApiUrlWithAdmin } from './../config';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import {  ApiUrlWithUser, BaseUrl } from '../config';
-import { ApproveRequests, Booking, ProviderServiceDetail, RequestBody, ServiceCategory } from '../models/service.model';
+import { ApiUrlWithUser, BaseUrl } from '../config';
+import {
+  ApproveRequests,
+  Booking,
+  ProviderServiceDetail,
+  RequestBody,
+  ServiceCategory,
+} from '../models/service.model';
 import { AdminUser } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AdminService {
-  userId:string= '';
+  userId: string = '';
   apiUrl: string = `${BaseUrl}${ApiUrlWithAdmin}`;
-  apiUserUrl:string = `${BaseUrl}${ApiUrlWithUser}`;
+  apiUserUrl: string = `${BaseUrl}${ApiUrlWithUser}`;
   http: HttpClient = inject(HttpClient);
   deleteService(serviceId: string): Observable<{
     status: string;
@@ -46,115 +52,132 @@ export class AdminService {
     }>(`${this.apiUrl}/users/${email}`);
   }
 
-  requestService(
-    data: RequestBody
-  ): Observable<{
+  requestService(data: RequestBody): Observable<{
     status: string;
     message: string;
     data: { request_id: string };
   }> {
-    const params = {user_id:this.userId};
+    const params = { user_id: this.userId };
     return this.http.post<{
       status: string;
       message: string;
       data: { request_id: string };
-    }>(`${this.apiUserUrl}/services/request`, data,{params});
+    }>(`${this.apiUserUrl}/services/request`, data, { params });
   }
 
-  fetchBookings(itemsPerPage:number,currentPage:number,selectedStatus:string): Observable<{
+  fetchBookings(
+    itemsPerPage: number,
+    currentPage: number,
+    selectedStatus: string
+  ): Observable<{
     status: string;
     message: string;
     data: Booking[];
   }> {
-    const params = {
-      user_id:this.userId,
-      limit : itemsPerPage,
-      offset: (currentPage-1) * itemsPerPage
+    let params = new HttpParams()
+      .set('limit', itemsPerPage)
+      .set('offset', (currentPage - 1) * itemsPerPage);
+
+    if (selectedStatus) {
+      params = params.set('status', selectedStatus);
     }
     return this.http.get<{
       status: string;
       message: string;
       data: Booking[];
-    }>(`${this.apiUserUrl}/bookings`,{params})
+    }>(`${this.apiUserUrl}/bookings`, { params });
   }
 
-
-  cancelServiceRequest(requestId:string):Observable<{
+  cancelServiceRequest(requestId: string): Observable<{
     status: string;
     message: string;
   }> {
-    const params = {user_id:this.userId};
-    console.log('in service :',params)
+    const params = { user_id: this.userId };
+    console.log('in service :', params);
     return this.http.patch<{
       status: string;
       message: string;
-    }>(`${this.apiUserUrl}/services/request/${requestId}`,null,{params});
+    }>(`${this.apiUserUrl}/services/request/${requestId}`, null, { params });
   }
 
-  updateServiceRequest(data:{id:string,scheduled_time:string}):Observable<{
+  updateServiceRequest(data: {
+    id: string;
+    scheduled_time: string;
+  }): Observable<{
     status: string;
     message: string;
   }> {
-    const params = {user_id:this.userId};
+    const params = { user_id: this.userId };
     return this.http.put<{
       status: string;
       message: string;
-    }>(`${this.apiUserUrl}/services/request`,data,{params});
-
+    }>(`${this.apiUserUrl}/services/request`, data, { params });
   }
 
-  approveRequest(body:{request_id:string,provider_id:string}):Observable<{
+  approveRequest(body: {
+    request_id: string;
+    provider_id: string;
+  }): Observable<{
     status: string;
     message: string;
   }> {
-    const params = {user_id:this.userId};
+    const params = { user_id: this.userId };
     return this.http.put<{
       status: string;
       message: string;
-    }>(`${this.apiUserUrl}/services/request/approve`,body,{params})
+    }>(`${this.apiUserUrl}/services/request/approve`, body, { params });
   }
 
-  viewApprovedRequest(itemsPerPage:number , currentPage: number):Observable<{
+  viewApprovedRequest(
+    itemsPerPage: number,
+    currentPage: number,
+    selectedStatus: string
+  ): Observable<{
     status: string;
     message: string;
-    data: ApproveRequests[]
+    data: ApproveRequests[];
   }> {
-    const params = {
-      user_id:this.userId,
-      limit : itemsPerPage,
-      offset: (currentPage-1) * itemsPerPage
-    }
-    console.log(params);
-  return this.http.get<{
-    status: string;
-    message: string;
-    data: ApproveRequests[]
-  }>(`${this.apiUserUrl}/service/request/approved`,{params});
-  }
+    let params = new HttpParams()
+      .set('limit', itemsPerPage)
+      .set('offset', (currentPage - 1) * itemsPerPage);
 
-  fetchServices(itemsPerPage:number,currentPage:number):Observable<{
-    status:string,
-    message:string,
-    data:ProviderServiceDetail[]
-  }>{
-    const params = {
-      limit : itemsPerPage,
-      offset: (currentPage-1) * itemsPerPage
+    if (selectedStatus) {
+      params = params.set('order', selectedStatus);
     }
+
     return this.http.get<{
-      status:string,
-      message:string,
-      data:ProviderServiceDetail[]
-    }>(`${this.apiUserUrl}/services`,{params});
+      status: string;
+      message: string;
+      data: ApproveRequests[];
+    }>(`${this.apiUserUrl}/service/request/approved`, { params });
   }
 
-  deactivateAccount(providerId:string):Observable<{
-    status:string,
-    message:string,
+  fetchServices(
+    itemsPerPage: number,
+    currentPage: number
+  ): Observable<{
+    status: string;
+    message: string;
+    data: ProviderServiceDetail[];
+  }> {
+    const params = {
+      limit: itemsPerPage,
+      offset: (currentPage - 1) * itemsPerPage,
+    };
+    return this.http.get<{
+      status: string;
+      message: string;
+      data: ProviderServiceDetail[];
+    }>(`${this.apiUserUrl}/services`, { params });
+  }
+
+  deactivateAccount(providerId: string): Observable<{
+    status: string;
+    message: string;
   }> {
     return this.http.patch<{
-      status:string,
-      message:string,
-    }>(`${this.apiUrl}/deactivate/${providerId}`,null);
+      status: string;
+      message: string;
+    }>(`${this.apiUrl}/deactivate/${providerId}`, null);
   }
 }

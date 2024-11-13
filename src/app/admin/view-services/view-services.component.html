@@ -1,5 +1,5 @@
 <div class="services-container">
-  <p-toast/>
+  <p-toast />
   <header class="services-header">
     <h1>SERVICE NEST</h1>
     <button class="back-btn" (click)="onBack()">←</button>
@@ -11,9 +11,9 @@
       <label for="statusFilter">Filter:</label>
       <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="onStatusChange()">
         <option value="">All</option>
-        
+
         @for (category of categories.keys(); track $index) {
-          <option [value]="categories.get(category)">{{categories.get(category)}}</option>
+        <option [value]="categories.get(category)">{{categories.get(category)}}</option>
         }
       </select>
     </div>
@@ -40,8 +40,8 @@
             <td class="actions">
               <button class="btn cancel" (click)="deactivateAccount(service.provider_id)">❌</button>
             </td>
-            
-            
+
+
           </tr>
           }
         </tbody>

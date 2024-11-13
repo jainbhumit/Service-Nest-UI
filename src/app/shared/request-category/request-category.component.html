@@ -1,36 +1,21 @@
-<!-- <div class="service-nest">
-  <header class="services-header">
-    <button>⬅️</button>
-    <h1>SERVICE NEST</h1>
-    <button class="explore-btn" [routerLink]="'/householder/home'">EXPLORE MORE</button>
-  </header>
-
-  <nav class="sidebar">
-    <button class="nav-item active" [routerLink]="'/user/profile'">PROFILE</button>
-    <button class="nav-item">Bookings</button>
-    <button class="nav-item">SERVICE REQUEST</button>
-    <button class="nav-item">ACCEPT REQUEST</button>
-    <button class="nav-item">APPROVE REQUEST</button>
-  </nav> -->
-
 <div class="services-container">
 
   <header class="services-header">
     <h1>SERVICE NEST</h1>
     <button class="back-btn" (click)="onBack()">←</button>
-    <button class="explore-btn" [routerLink]="'/householder/home'">EXPLORE MORE</button>
+    <button class="explore-btn" [routerLink]="getRouterLink('home')">EXPLORE MORE</button>
   </header>
 
   <nav class="sidebar">
     <button class="nav-item" [routerLink]="'/user/profile'">PROFILE</button>
-    <button class="nav-item" [routerLink]="getRouterLink('requests')">SERVICE REQUEST</button>
-    <button class="nav-item" [routerLink]="getRouterLink('approve')">APPROVE REQUEST</button>
+    <button class="nav-item" [routerLink]="getRouterLink('requests')">SERVICE REQUESTS</button>
+    <button class="nav-item" [routerLink]="getRouterLink('approve')">APPROVED REQUESTS</button>
     @if(userRole==='ServiceProvider') {
-      <button class="nav-item" [routerLink]="getRouterLink('review')">REVIEW</button>
+    <button class="nav-item" [routerLink]="getRouterLink('review')">REVIEWS</button>
     }@else if(userRole==='Householder'){
-      <button class="nav-item" [routerLink]="getRouterLink('approve')">REVIEW</button>
+    <button class="nav-item" [routerLink]="getRouterLink('approve')">REVIEWS</button>
     }@else {
-      <button class="nav-item" [routerLink]="getRouterLink('services')">REVIEW</button>
+    <button class="nav-item" [routerLink]="getRouterLink('services')">REVIEWS</button>
     }
   </nav>
 
@@ -45,7 +30,7 @@
         @if (userRole==='Householder' || userRole==='Admin') {
         <button class="request-btn" (click)="requestService()">REQUEST SERVICE</button>
         }@else if (userRole==='ServiceProvider') {
-          <button class="request-btn" (click)="addService()">ADD SERVICE</button>
+        <button class="request-btn" (click)="addService()">ADD SERVICE</button>
         }
 
         @if (userRole==='Householder' || userRole==='Admin') {
@@ -55,8 +40,8 @@
             <span>{{availableProviders}}</span>
           </div>
           <div class="info-item">
-            <span>AVG ESTIMATED PRICE</span>
-            <span>{{avgPrice}}</span>
+            <span>AVG ESTIMATED PRICE </span>
+            <span>{{avgPrice | avg }}</span>
           </div>
         </div>
         }
@@ -107,10 +92,10 @@
               <button class="delete-service" (click)="cancelService(service.id)">❌</button>
               <button class="update-service" (click)="updateService(service)">✏️</button>
             </div>
-           </div>
+          </div>
           }
           }@else {
-            <p>You don't have any service</p>
+          <p>You don't have any service</p>
           }
 
         </div>

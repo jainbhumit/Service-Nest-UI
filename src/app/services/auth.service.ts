@@ -2,17 +2,21 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { BaseUrl, Role, TokenKey } from '../config';
-import { ForgetPasswordData, LoginData, SignupData } from '../models/auth.model';
+import {
+  ForgetPasswordData,
+  LoginData,
+  SignupData,
+} from '../models/auth.model';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private apiUrl = BaseUrl; // Base URL for API
   private isAuthenticated$ = new BehaviorSubject<boolean>(this.hasToken());
-  userRole = signal<Role | undefined>(undefined); 
-  
+  userRole = signal<Role | undefined>(undefined);
+  isLoading = signal(false); 
   constructor(private http: HttpClient) {}
 
   signup(data: SignupData): Observable<any> {
@@ -28,17 +32,17 @@ export class AuthService {
           this.getRole(response.data.token);
           this.isAuthenticated$.next(true);
         }
-        console.log(response)
+        console.log(response);
       })
     );
   }
 
-  forgetPassword(data:ForgetPasswordData) {
-    return this.http.put(`${this.apiUrl}/forget`,data);
+  forgetPassword(data: ForgetPasswordData) {
+    return this.http.put(`${this.apiUrl}/forget`, data);
   }
 
   private setToken(token: string): void {
-    localStorage.setItem(TokenKey,token);
+    localStorage.setItem(TokenKey, token);
   }
 
   getToken(): string | null {
@@ -50,10 +54,8 @@ export class AuthService {
     this.isAuthenticated$.next(false);
   }
 
-  getRole(token:string) {
-    const decodedToken = jwtDecode<JwtPayload>(
-      token
-    ) as unknown as JwtPayload;
+  getRole(token: string) {
+    const decodedToken = jwtDecode<JwtPayload>(token) as unknown as JwtPayload;
 
     if (
       decodedToken &&
@@ -63,7 +65,6 @@ export class AuthService {
       const userRole = (decodedToken as any).role;
       this.userRole.set(userRole);
     }
-  
   }
   private hasToken(): boolean {
     return !!this.getToken();
@@ -73,5 +74,3 @@ export class AuthService {
     return this.isAuthenticated$.asObservable();
   }
 }
-
-

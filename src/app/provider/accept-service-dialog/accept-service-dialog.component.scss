@@ -44,7 +44,7 @@
     transition: background-color 0.3s;
     margin-left: auto;
     white-space: nowrap;
-    
+
     &:hover {
       background-color: #511f10;
     }
@@ -62,7 +62,7 @@
     transition: background-color 0.3s;
     margin-left: auto;
     white-space: nowrap;
-    
+
     &:hover {
       background-color: #511f10;
     }
@@ -74,13 +74,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #E8E1E1;
+  background-color: #e8e1e1;
   padding: 1rem;
   font-family: Arial, sans-serif;
 }
 
 .request-service-box {
-  background-color: #E8E1E1;
+  background-color: #e8e1e1;
   border-radius: 20px;
   width: 100%;
   max-width: 600px;
@@ -121,7 +121,6 @@
   font-weight: bold;
   color: #666;
 }
-
 
 input::placeholder {
   color: #f5f5f5;

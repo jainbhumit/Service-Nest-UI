@@ -2,7 +2,7 @@
 <form [formGroup]="requestServiceForm" (ngSubmit)="onSubmit()" mat-dialog-content>
   <mat-form-field appearance="fill">
     <mat-label>Service Name</mat-label>
-    <input matInput formControlName="service_name" placeholder="Enter service name">
+    <input matInput formControlName="service_name" placeholder="Enter service name" maxlength="20">
   </mat-form-field>
 
   <mat-form-field appearance="fill">
@@ -12,10 +12,10 @@
 
   <mat-form-field appearance="fill">
     <mat-label>Description</mat-label>
-    <input matInput formControlName="description">
+    <input matInput formControlName="description" maxlength="40" >
   </mat-form-field>
 
-  
+
   <mat-form-field appearance="fill">
     <mat-label>Scheduled Date</mat-label>
     <input matInput [matDatepicker]="picker" formControlName="scheduled_date" required>
@@ -23,7 +23,7 @@
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
 
-  
+
   <mat-form-field appearance="fill">
     <mat-label>Scheduled Time</mat-label>
     <input matInput type="time" formControlName="scheduled_time" required>

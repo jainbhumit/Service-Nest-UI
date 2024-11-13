@@ -6,12 +6,18 @@
   </header>
 
   <div class="view-request">
-    <h2>Requests</h2>
+    <div class="table-header">
+      <h2>Reviews</h2>
+      <button class="refresh-btn" (click)="onRefresh()">
+        <i class="fas fa-sync-alt">🔃</i> 
+      </button>
+    </div>
     <div class="filter-container">
       <label for="statusFilter">Filter:</label>
       <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="onStatusChange()">
+        <option value="">All</option>
         @for (category of categories.keys(); track $index) {
-          <option [value]="category">{{categories.get(category)}}</option>
+        <option [value]="category">{{categories.get(category)}}</option>
         }
       </select>
     </div>
@@ -27,6 +33,9 @@
           </tr>
         </thead>
         <tbody>
+          @if(filteredReview.length<=0) {
+            <app-no-data-found/>
+          }
           @for(review of filteredReview;track $index) {
           <tr>
             <td>{{review.id}}</td>

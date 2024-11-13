@@ -8,10 +8,9 @@ describe('EditRequestDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [EditRequestDialogComponent]
-    })
-    .compileComponents();
-    
+      declarations: [EditRequestDialogComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(EditRequestDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

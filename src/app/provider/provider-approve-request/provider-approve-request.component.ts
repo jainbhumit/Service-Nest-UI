@@ -8,7 +8,7 @@ import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-provider-approve-request',
   templateUrl: './provider-approve-request.component.html',
-  styleUrl: './provider-approve-request.component.scss'
+  styleUrl: './provider-approve-request.component.scss',
 })
 export class ProviderApproveRequestComponent {
   approveRequests: ProviderApproveRequest[] = [];
@@ -29,14 +29,16 @@ export class ProviderApproveRequestComponent {
 
   loadApproveRequests(): void {
     this.providerService
-      .viewApprovedRequest(this.itemsPerPage, this.currentPage)
+      .viewApprovedRequest(this.itemsPerPage, this.currentPage,this.selectedStatus)
       .subscribe({
         next: (response) => {
-          if (response.status=='Fail' && response.message === 'no approved requests found for this provider') {
+          if (
+            response.status == 'Fail' &&
+            response.message === 'no approved requests found for this provider'
+          ) {
             this.approveRequests = [];
           } else {
-            this.approveRequests = response.data;
-            this.applyStatusFilter();
+            this.filteredRequests = response.data;
             this.apiResponseEnd = response.data.length < this.itemsPerPage;
           }
         },
@@ -44,23 +46,6 @@ export class ProviderApproveRequestComponent {
           console.log(err.error.message);
         },
       });
-  }
-  applyStatusFilter(): void {
-    if (this.selectedStatus == 'Late') {
-      this.filteredRequests = this.approveRequests.filter((request) => {
-        const requestTime = new Date(request.scheduled_time).getTime();
-        const currentTime = new Date().getTime();
-        return currentTime > requestTime;
-      });
-    } else if (this.selectedStatus == 'Early') {
-      this.filteredRequests = this.approveRequests.filter((request) => {
-        const requestTime = new Date(request.scheduled_time).getTime();
-        const currentTime = new Date().getTime();
-        return currentTime < requestTime;
-      });
-    } else {
-      this.filteredRequests = this.approveRequests;
-    }
   }
 
   onPageChange(newPage: number) {
@@ -73,8 +58,11 @@ export class ProviderApproveRequestComponent {
     this.router.navigate(['/provider/home']);
   }
 
-  onStatusChange() {
-    this.applyStatusFilter();
+  onRefresh() {
+    this.loadApproveRequests();
   }
 
+  onStatusChange() {
+    this.loadApproveRequests();
+  }
 }

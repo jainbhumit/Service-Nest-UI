@@ -1,5 +1,5 @@
 <div class="services-container">
-  <p-toast/>
+  <p-toast />
   <header class="services-header">
     <h1>SERVICE NEST</h1>
     <button class="back-btn" (click)="onBack()">←</button>
@@ -37,12 +37,12 @@
             @if (provider.rating==0) {
             <td>NEW</td>
             }@else {
-              <td>{{provider.rating}}</td>
+            <td>{{provider.rating}}</td>
             }
-              <td class="actions">
-                <button class="btn update" (click)="approveRequest(provider.service_provider_id)">✔️</button>
-              </td>
-            
+            <td class="actions">
+              <button class="btn update" (click)="approveRequest(provider.service_provider_id)">Approve</button>
+            </td>
+
           </tr>
           }
         </tbody>

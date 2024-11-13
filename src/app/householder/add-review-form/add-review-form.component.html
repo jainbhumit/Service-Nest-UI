@@ -2,7 +2,7 @@
 <form [formGroup]="addReviewForm" (ngSubmit)="onSubmit()" mat-dialog-content>
   <mat-form-field appearance="fill">
     <mat-label>Comments</mat-label>
-    <input matInput formControlName="comment" placeholder="Add Comment">
+    <input matInput formControlName="comment" placeholder="Add Comment" maxlength="50">
   </mat-form-field>
 
   <mat-form-field appearance="fill">

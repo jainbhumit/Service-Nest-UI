@@ -6,35 +6,30 @@
 
   <nav class="sidebar">
     <button class="nav-item" [routerLink]="'/user/profile'">PROFILE</button>
-    <button class="nav-item" [routerLink]="'/provider/requests'">SERVICE REQUEST</button>
-    <button class="nav-item" [routerLink]="'/provider/approve'">APPROVE REQUEST</button>
+    <button class="nav-item" [routerLink]="'/provider/requests'">SERVICE REQUESTS</button>
+    <button class="nav-item" [routerLink]="'/provider/approve'">APPROVED REQUESTS</button>
     <button class="nav-item" [routerLink]="'/provider/review'">REVIEW</button>
   </nav>
 
   <main class="services-content">
     <div class="search-bar">
-      <input 
-        type="text" 
-        placeholder="Search"
-        [(ngModel)]="searchTerm"
-        (input)="filterServices()"
-      >
+      <input type="text" placeholder="Search" [(ngModel)]="searchTerm" (input)="filterServices()">
       <i class="search-icon">🔍</i>
     </div>
-    
+
     <h2>Categories</h2>
-    
+
     <div class="services-grid">
       @for (service of filteredServices; track $index) {
-        <div class="service-card" (click)="onServiceClick(service)">
-          <div class="service-image">
-            <img [src]="getServiceImg(service.name)" [alt]="service.name">
-          </div>
-          <h3>{{service.name | uppercase}}</h3>
-          <div class="service-description">
-            <p>{{service.description}}</p>
-          </div>
+      <div class="service-card" (click)="onServiceClick(service)">
+        <div class="service-image">
+          <img [src]="getServiceImg(service.name)" [alt]="service.name">
         </div>
+        <h3>{{service.name | uppercase}}</h3>
+        <div class="service-description">
+          <p>{{service.description}}</p>
+        </div>
+      </div>
       }
     </div>
   </main>

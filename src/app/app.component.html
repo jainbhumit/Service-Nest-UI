@@ -1,4 +1,7 @@
 <div>
-  <p-toast/>
+  @if(loading()) {
+    <app-spinner></app-spinner>
+  }
   <router-outlet></router-outlet>
+  <p-toast position="bottom-right"/>
 </div>

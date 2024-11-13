@@ -6,7 +6,21 @@
   </header>
 
   <div class="view-request">
-    <h2>Requests</h2>
+    <div class="table-header">
+      <h2>Requests</h2>
+      <button class="refresh-btn" (click)="onRefresh()">
+        <i class="fas fa-sync-alt">🔃</i> 
+      </button>
+    </div>
+    <div class="filter-container">
+      <label for="statusFilter">Filter:</label>
+      <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="onStatusChange()">
+        <option value="">All</option>
+        @for (category of categories.keys(); track $index) {
+        <option [value]="category">{{categories.get(category)}}</option>
+        }
+      </select>
+    </div>
     <div class="table-container">
       <table>
         <thead>
@@ -20,6 +34,9 @@
           </tr>
         </thead>
         <tbody>
+          @if(paginatedRequest.length<=0) {
+            <app-no-data-found/>
+          }
           @for(request of paginatedRequest;track $index) {
           <tr>
             <td>{{request.request_id}}</td>
@@ -27,10 +44,10 @@
             <td>{{request.scheduled_time | datetime}}</td>
             <td>{{request.description}}</td>
             <td>{{request.address}}</td>
-              <td class="actions">
-                <button class="btn update" (click)="acceptRequest(request.request_id)">✅</button>
-              </td>
-            
+            <td class="actions">
+              <button class="btn update" (click)="acceptRequest(request.request_id)">Accept</button>
+            </td>
+
           </tr>
           }
         </tbody>

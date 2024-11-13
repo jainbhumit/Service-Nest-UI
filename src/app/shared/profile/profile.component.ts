@@ -15,12 +15,12 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './profile.component.scss',
 })
 export class ProfileComponent implements OnInit {
-  private location = inject(Location)
+  private location = inject(Location);
   private userService = inject(UserService);
   private authService = inject(AuthService);
-  private messageService  = inject(MessageService);
+  private messageService = inject(MessageService);
   update: boolean = false;
-  router:Router = inject(Router);
+  router: Router = inject(Router);
   errorMessage: string = '';
   user: UserProfile = {
     id: '',
@@ -33,7 +33,7 @@ export class ProfileComponent implements OnInit {
     security_answer: '',
     is_active: true,
   };
-  userRole:Role | undefined; 
+  userRole: Role | undefined;
   updateForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -46,10 +46,14 @@ export class ProfileComponent implements OnInit {
     ]),
     role: new FormControl('', [Validators.required]),
     address: new FormControl('', [Validators.required]),
-    contact: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{10,}$/)]),
+    contact: new FormControl('', [
+      Validators.required,
+      Validators.pattern(/^[0-9]{10,}$/),
+    ]),
   });
   ngOnInit(): void {
-    this.userRole = this.authService?.userRole(); 
+    this.authService.isLoading.update(()=>true);
+    this.userRole = this.authService?.userRole();
     this.userService.getProfile().subscribe({
       next: (response) => {
         this.user = response.data;
@@ -72,6 +76,7 @@ export class ProfileComponent implements OnInit {
         console.log(err.error.message);
       },
     });
+    this.authService.isLoading.update(()=>false);
   }
   UpdateProfile() {
     this.update = true;
@@ -84,34 +89,40 @@ export class ProfileComponent implements OnInit {
 
   Update() {
     if (this.updateForm.valid) {
-      const data:UpdateProfile = {
+      const data: UpdateProfile = {
         email: this.updateForm.controls['email'].value as string,
-        password:this.updateForm.value.password as string,
+        password: this.updateForm.value.password as string,
         address: this.updateForm.value.address as string,
-        contact:this.updateForm.value.contact as string
-      }
+        contact: this.updateForm.value.contact as string,
+      };
+      this.authService.isLoading.update(()=>true);
       this.userService.updateProfile(data).subscribe({
-        next:(response) => {
-          if(response.status=='Success') {
-            this.messageService.add({severity:'success',summary:'Success',detail:"User update successfully"});
-            if(this.userRole=='Householder') {
+        next: (response) => {
+          if (response.status == 'Success') {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'User update successfully',
+            });
+            if (this.userRole == 'Householder') {
               this.router.navigate(['/householder/home']);
-            }else if(this.userRole==='ServiceProvider'){
+            } else if (this.userRole === 'ServiceProvider') {
               this.router.navigate(['/provider/home']);
-            }else {
-              this.router.navigate(['/admin/home'])
+            } else {
+              this.router.navigate(['/admin/home']);
             }
           }
         },
         error: (err) => {
-          if(err.error.message=='Error updating user') {
-            this.errorMessage='email id already exist';
-          }else {
-            this.errorMessage=err.error.message;
+          if (err.error.message == 'Error updating user') {
+            this.errorMessage = 'email id already exist';
+          } else {
+            this.errorMessage = err.error.message;
           }
-        }
-      })
-    }else {
+        },
+      });
+      this.authService.isLoading.update(()=>false);
+    } else {
       console.log('Not valid ');
     }
   }
@@ -136,12 +147,12 @@ export class ProfileComponent implements OnInit {
     this.location.back();
   }
 
-  getRouterLink(path:string):string {
-    if(this.userRole==='Householder') {
+  getRouterLink(path: string): string {
+    if (this.userRole === 'Householder') {
       return `/householder/${path}`;
-    }else if(this.userRole==='ServiceProvider') {
-      return `/provider/${path}`
-    }else {
+    } else if (this.userRole === 'ServiceProvider') {
+      return `/provider/${path}`;
+    } else {
       return `/admin/${path}`;
     }
   }

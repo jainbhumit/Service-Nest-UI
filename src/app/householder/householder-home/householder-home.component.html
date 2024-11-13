@@ -6,50 +6,45 @@
 
   <nav class="sidebar">
     <button class="nav-item" [routerLink]="'/user/profile'">PROFILE</button>
-    <button class="nav-item" [routerLink]="getRouterLink('requests')">SERVICE REQUEST</button>
-    <button class="nav-item" [routerLink]="getRouterLink('approve')">APPROVE REQUEST</button>
+    <button class="nav-item" [routerLink]="getRouterLink('requests')">SERVICE REQUESTS</button>
+    <button class="nav-item" [routerLink]="getRouterLink('approve')">APPROVED REQUESTS</button>
     @if(role==='Householder') {
-      <button class="nav-item" [routerLink]="getRouterLink('approve')">REVIEW</button>
+    <button class="nav-item" [routerLink]="getRouterLink('approve')">REVIEWS</button>
     }@else {
-      <button class="nav-item" [routerLink]="getRouterLink('services')">SERVICES</button>
+    <button class="nav-item" [routerLink]="getRouterLink('services')">SERVICES</button>
     }
   </nav>
 
   <main class="services-content">
     <div class="search-bar">
-      <input 
-        type="text" 
-        placeholder="Search"
-        [(ngModel)]="searchTerm"
-        (input)="filterServices()"
-      >
+      <input type="text" placeholder="Search" [(ngModel)]="searchTerm" (input)="filterServices()">
       <i class="search-icon">🔍</i>
     </div>
-      <div class="category-btn-section">
-        <div class="category">
-          <h2>Categories</h2>
-        </div>
-        @if (role==='Admin') {
-          <div class="add-category">
-            <button (click)="addService()">ADD</button>
-          </div>
-        }
+    <div class="category-btn-section">
+      <div class="category">
+        <h2>Categories</h2>
       </div>
-      
+      @if (role==='Admin') {
+      <div class="add-category">
+        <button (click)="addCategory()">ADD</button>
+      </div>
+      }
+    </div>
+
     <div class="services-grid">
       @for (service of filteredServices; track $index) {
-        <div class="service-card" (click)="onServiceClick(service)">
-          <div class="service-image">
-            <img [src]="getServiceImg(service.name)" [alt]="service.name">
-          </div>
-          <h3>{{service.name | uppercase}}</h3>
-          @if (role==='Admin') {
-            <div class="service-description">
-              <button class="cat-delete" (click)="deleteCategory(service.id)">❌</button>
-            </div>
-          }
-         
+      <div class="service-card" (click)="onServiceClick(service)">
+        <div class="service-image">
+          <img [src]="getServiceImg(service.name)" [alt]="service.name">
         </div>
+        <h3>{{service.name | uppercase}}</h3>
+        @if (role==='Admin') {
+        <div class="service-description">
+          <button class="cat-delete" (click)="deleteCategory(service.id)">❌</button>
+        </div>
+        }
+
+      </div>
       }
     </div>
   </main>

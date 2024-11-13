@@ -1,68 +1,68 @@
 <div class="signup-container">
   <div class="form-section">
     <h1 class="title">SERVICE NEST</h1>
-    
+
     <form class="signup-form" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
       <div class="form-field">
         @if (signupForm.get('username')?.dirty && signupForm.get('username')?.invalid) {
-          <span class="required">*</span>
+        <span class="required">*</span>
         }
         <input type="text" placeholder="Name" formControlName="username">
       </div>
-      
+
       <div class="form-field">
         @if (signupForm.get('email')?.dirty && signupForm.get('email')?.invalid) {
-          <span class="required">*</span>
+        <span class="required">*</span>
         }
         <input type="email" placeholder="Email" formControlName="email">
       </div>
-      
+
       <div class="form-field">
         @if (signupForm.get('password')?.dirty && signupForm.get('password')?.invalid) {
-          <span class="required">*</span>
+        <span class="required">*</span>
         }
         <input type="password" placeholder="Password" formControlName="password" (input)="onPasswordInput()">
       </div>
-      
+
       <div class="form-field">
         @if (signupForm.get('role')?.dirty && signupForm.get('role')?.invalid) {
-          <span class="required">*</span>
+        <span class="required">*</span>
         }
-        <select formControlName="role"> 
+        <select formControlName="role">
           <option value="" disabled selected>Choose Role</option>
           <option value="ServiceProvider">Service Provider</option>
           <option value="Householder">Householder</option>
         </select>
-        
+
       </div>
-      
+
       <div class="form-field">
         @if (signupForm.get('address')?.dirty && signupForm.get('address')?.invalid) {
-          <span class="required">*</span>
+        <span class="required">*</span>
         }
         <input type="text" placeholder="Address" formControlName="address">
       </div>
-      
+
       <div class="form-field">
         @if (signupForm.get('contact')?.dirty && signupForm.get('contact')?.invalid) {
-          <span class="required">*</span>
+        <span class="required">*</span>
         }
         <input type="tel" placeholder="Contact" formControlName="contact">
       </div>
-      
+
       <div class="form-field">
         @if (signupForm.get('securityAnswer')?.dirty && signupForm.get('securityAnswer')?.invalid) {
-          <span class="required">*</span>
+        <span class="required">*</span>
         }
         <input type="text" placeholder="First school name" formControlName="securityAnswer">
       </div>
       @if (errMessage!='') {
-        <span class="err">{{errMessage}}</span>
+      <span class="err">{{errMessage}}</span>
       }
       <button type="submit" class="signup-btn">Sign Up</button>
     </form>
   </div>
-  
+
   <div class="image-section">
     <div class="hexagon-frame">
       <img src="assets/hero.png" alt="hero">

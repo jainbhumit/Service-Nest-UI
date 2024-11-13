@@ -28,10 +28,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ToastModule } from 'primeng/toast';
+import { TooltipModule} from 'primeng/tooltip'
 
 import { routes } from './app.routes';
 import { ProviderHomeComponent } from './provider/provider-home/provider-home.component';
-import { authInterceptor, authResponseInterceptor } from './intercepters/auth.intercepter';
+import {
+  authInterceptor,
+  authResponseInterceptor,
+} from './intercepters/auth.intercepter';
 import { ForgotPasswordComponent } from './shared/forgot-password/forgot-password.component';
 import { RequestCategoryComponent } from './shared/request-category/request-category.component';
 import { RequestServiceFormComponent } from './householder/request-service-form/request-service-form.component';
@@ -55,6 +59,8 @@ import { AcceptServiceDialogComponent } from './provider/accept-service-dialog/a
 import { AdminAddCategoryComponent } from './admin/admin-add-category/admin-add-category.component';
 import { ServicesComponent } from './admin/view-services/view-services.component';
 import { DateTimePipe } from './pipes/date-time.pipe';
+import { AveragePipe } from './pipes/average.pipe';
+import { NoDataFoundComponent } from './shared/no-data-found/no-data-found.component';
 
 @NgModule({
   declarations: [
@@ -83,6 +89,8 @@ import { DateTimePipe } from './pipes/date-time.pipe';
     AcceptServiceDialogComponent,
     AdminAddCategoryComponent,
     ServicesComponent,
+    AveragePipe,
+    NoDataFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -99,15 +107,24 @@ import { DateTimePipe } from './pipes/date-time.pipe';
     MatDatepickerModule,
     MatNativeDateModule,
     ToastModule,
-    DateTimePipe
+    DateTimePipe,
+    TooltipModule
   ],
   providers: [
     DatePipe,
-    { provide: HTTP_INTERCEPTORS, useValue: {intercept:authInterceptor}, multi: true },
-    { provide: HTTP_INTERCEPTORS, useValue: {intercept:authResponseInterceptor}, multi: true },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useValue: { intercept: authInterceptor },
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useValue: { intercept: authResponseInterceptor },
+      multi: true,
+    },
     provideRouter(routes, withComponentInputBinding()),
     provideAnimationsAsync('noop'),
-    MessageService
+    MessageService,
   ],
   bootstrap: [AppComponent],
 })

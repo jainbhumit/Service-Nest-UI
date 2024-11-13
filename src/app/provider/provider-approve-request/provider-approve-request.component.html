@@ -1,18 +1,23 @@
 <div class="services-container">
-  <p-toast/>
+  <p-toast />
   <header class="services-header">
     <h1>SERVICE NEST</h1>
     <button class="back-btn" (click)="onBack()">←</button>
   </header>
 
   <div class="view-request">
-    <h2>Approved Request</h2>
+    <div class="table-header">
+      <h2>Approved Request</h2>
+      <button class="refresh-btn" (click)="onRefresh()">
+        <i class="fas fa-sync-alt">🔃</i> 
+      </button>
+    </div>
     <div class="filter-container">
       <label for="statusFilter">Filter:</label>
       <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="onStatusChange()">
         <option value="">All</option>
-        <option value="Late">Late</option>
-        <option value="Early">Early</option>
+        <option value="New to Old">New to Old</option>
+        <option value="Old to New">Old to New</option>
       </select>
     </div>
     <div class="table-container">
@@ -29,6 +34,9 @@
           </tr>
         </thead>
         <tbody>
+          @if(filteredRequests.length<=0) {
+            <app-no-data-found/>
+          }
           @for(request of filteredRequests;track $index) {
           <tr>
             <td>{{request.request_id || 'N/A'}}</td>

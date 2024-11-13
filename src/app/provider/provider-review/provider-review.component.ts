@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-provider-review',
@@ -18,6 +19,7 @@ export class ProviderReviewComponent {
   private datePipe = inject(DatePipe);
   private router: Router = inject(Router);
   private messageService = inject(MessageService);
+  private authService = inject(AuthService);
 
   providerReview: ProviderReview[] = [];
   filteredReview: ProviderReview[] = [];
@@ -28,6 +30,7 @@ export class ProviderReviewComponent {
   apiResponseEnd: boolean = false;
 
   ngOnInit(): void {
+    this.authService.isLoading.update(() => true)
     this.userService.fetchCategories().subscribe({
       next: (response) => {
         response.data.map((category) => {
@@ -38,35 +41,33 @@ export class ProviderReviewComponent {
       error: (err) => console.log(err.error.message),
     });
     this.loadReview();
+    this.authService.isLoading.update(() => false)
   }
 
   loadReview(): void {
+    this.authService.isLoading.update(()=>true)
     this.providerService
-      .getReview(this.itemsPerPage, this.currentPage)
+      .getReview(this.itemsPerPage, this.currentPage,this.selectedStatus)
       .subscribe({
         next: (response) => {
           if (
             response.status == 'Fail' &&
-            response.message === 'no approved requests found for this provider'
+            response.message === 'no reviews found'
           ) {
-            this.providerReview = [];
+            this.filteredReview = [];
           } else {
-            this.providerReview = response.data;
-            this.applyStatusFilter();
+            this.filteredReview = response.data;
             this.apiResponseEnd = response.data.length < this.itemsPerPage;
           }
         },
         error: (err) => {
+          if(err.error.message=='no reviews found') {
+            this.filteredReview = [];
+          }
           console.log(err.error.message);
         },
       });
-  }
-  applyStatusFilter(): void {
-    this.filteredReview = this.selectedStatus
-      ? this.providerReview.filter(
-          (category) => category.service_id == this.selectedStatus
-        )
-      : this.providerReview;
+      this.authService.isLoading.update(() => false)
   }
 
   onPageChange(newPage: number) {
@@ -80,6 +81,10 @@ export class ProviderReviewComponent {
   }
 
   onStatusChange() {
-    this.applyStatusFilter();
+    this.loadReview();
+  }
+
+  onRefresh() {
+    this.loadReview()
   }
 }

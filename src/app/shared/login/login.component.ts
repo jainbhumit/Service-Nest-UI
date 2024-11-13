@@ -11,7 +11,6 @@ import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { Role } from '../../config';
 
-
 function validPassword(control: AbstractControl) {
   const password = control.value;
   const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
@@ -27,6 +26,7 @@ export class LoginComponent {
   private authService = inject(AuthService);
   router: Router = inject(Router);
   errorMessage = '';
+  isLoading:boolean = false;
 
   loginForm = new FormGroup({
     email: new FormControl('', {
@@ -51,6 +51,7 @@ export class LoginComponent {
         email: this.email?.value as string,
         password: this.password?.value as string,
       };
+      this.authService.isLoading.update(()=>true);
       this.authService.login(loginData).subscribe({
         next: (response) => {
           const token = response.data.token;
@@ -64,7 +65,7 @@ export class LoginComponent {
             'role' in decodedToken
           ) {
             const userRole = (decodedToken as any).role;
-            console.log(userRole,"calling from login ts");
+            console.log(userRole, 'calling from login ts');
             this.authService.userRole.set(userRole);
             if (userRole === Role.admin) {
               this.router.navigate(['/admin/home']);
@@ -82,8 +83,10 @@ export class LoginComponent {
           this.errorMessage = error.error.message;
         },
       });
+      this.authService.isLoading.update(()=>false);
     } else {
       this.loginForm.markAllAsTouched();
     }
+    this.isLoading = false
   }
 }

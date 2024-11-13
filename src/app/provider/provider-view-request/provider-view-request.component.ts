@@ -9,6 +9,8 @@ import { EditRequestDialogComponent } from '../../householder/edit-request-dialo
 import { ConfirmCancelRequestComponentComponent } from '../../householder/confirm-cancel-request-component/confirm-cancel-request-component.component';
 import { ProviderService } from '../../services/provider.service';
 import { AcceptServiceDialogComponent } from '../accept-service-dialog/accept-service-dialog.component';
+import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-provider-view-request',
@@ -19,21 +21,34 @@ export class ProviderViewRequestComponent {
   paginatedRequest: ProviderViewRequest[] = [];
   private providerService = inject(ProviderService);
   private dialog = inject(MatDialog);
-  private datePipe = inject(DatePipe);
+  private authService = inject(AuthService);
   private router: Router = inject(Router);
   private messageService = inject(MessageService);
-
+  private userService = inject(UserService);
   currentPage = 1;
   itemsPerPage = 8;
   apiResponseEnd: boolean = false;
+  selectedStatus: string = '';
+  categories = new Map<string, string>();
 
   ngOnInit(): void {
+    this.authService.isLoading.update(() => true)
+    this.userService.fetchCategories().subscribe({
+      next: (response) => {
+        response.data.map((category) => {
+          this.categories.set(category.id, category.name);
+        });
+        console.log(this.categories);
+      },
+      error: (err) => console.log(err.error.message),
+    });
     this.loadRequests();
+    this.authService.isLoading.update(() => false)
   }
 
   loadRequests(): void {
     this.providerService
-      .viewServiceRequest(this.itemsPerPage, this.currentPage)
+      .viewServiceRequest(this.itemsPerPage, this.currentPage,this.selectedStatus)
       .subscribe({
         next: (response) => {
           if (response.message === 'No pending service requests available') {
@@ -66,6 +81,7 @@ export class ProviderViewRequestComponent {
     dialogRef.afterClosed().subscribe({
       next: (res) => {
         if (res) {
+          this.loadRequests();
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
@@ -78,5 +94,13 @@ export class ProviderViewRequestComponent {
 
   onBack() {
     this.router.navigate(['/provider/home']);
+  }
+
+  onRefresh() {
+    this.loadRequests();
+  }
+
+  onStatusChange() {
+    this.loadRequests();
   }
 }
