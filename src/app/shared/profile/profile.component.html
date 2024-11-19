@@ -1,6 +1,10 @@
 <div class="services-container">
   <header class="services-header">
-    <h1>SERVICE NEST</h1>
+    @if(userRole==='ServiceProvider') {
+    <h1 [routerLink]="'/provider/home'">SERVICE NEST</h1>
+    }@else {
+      <h1 [routerLink]="'/'+userRole?.toLocaleLowerCase()+'/home'">SERVICE NEST</h1>
+    }
     <button class="back-btn" (click)="onBack()">←</button>
   </header>
 
@@ -82,5 +86,9 @@
         <button type="submit" class="login-button">Update Profile</button>
 
         }
+      </div>
+
+      <div class="footer">
+         <a>📞121-456-789</a>
       </div>
     </div>

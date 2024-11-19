@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { ApiUrlWithUser, BaseUrl } from '../config';
 import { UpdateProfile, UserProfile } from '../models/user.model';
 import { ServiceCategory } from '../models/service.model';
+import { LoginComponent } from '../shared/login/login.component';
 
 @Injectable({
   providedIn: 'root',

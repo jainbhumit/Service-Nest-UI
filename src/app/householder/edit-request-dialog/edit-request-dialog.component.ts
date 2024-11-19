@@ -7,6 +7,7 @@ import { AdminService } from '../../services/admin.service';
 import { HouseholderService } from '../../services/householder.service';
 import { AuthService } from '../../services/auth.service';
 import { Role } from '../../config';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-edit-request-dialog',
@@ -22,7 +23,8 @@ export class EditRequestDialogComponent {
     public data: { request_id: string; scheduled_time: string },
     private householderService: HouseholderService,
     private datePipe: DatePipe,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private messageService: MessageService
   ) {}
 
   onConfirm(): void {
@@ -43,7 +45,9 @@ export class EditRequestDialogComponent {
             this.dialogRef.close(body.scheduled_time);
           },
           error: (err) => {
-            console.log(err.error.message);
+            if(err.error.message=='only pending request rescheduled') {
+              this.messageService.add({severity:'error',summary:'Failed',detail:'only pending and accepted request reschedule'})
+            }
             this.dialogRef.close();
           },
         });

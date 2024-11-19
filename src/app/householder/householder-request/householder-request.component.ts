@@ -1,5 +1,5 @@
+import { Role } from './../../config';
 import { Component, inject, OnInit } from '@angular/core';
-import { DatePipe, Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,7 +10,6 @@ import { AcceptServiceDialogComponent } from '../../provider/accept-service-dial
 
 import { HouseholderService } from '../../services/householder.service';
 import { AuthService } from '../../services/auth.service';
-import { Role } from '../../config';
 import { Booking } from '../../models/service.model';
 import { AdminService } from '../../services/admin.service';
 
@@ -50,7 +49,7 @@ export class HouseholderRequestComponent implements OnInit {
   }
 
   loadBookings(): void {
-    this.authService.isLoading.update(()=>true);
+    this.authService.isLoading.update(() => true);
     if (this.userRole === Role.householder) {
       this.householderService
         .fetchBookings(this.itemsPerPage, this.currentPage, this.selectedStatus)
@@ -86,7 +85,7 @@ export class HouseholderRequestComponent implements OnInit {
           },
         });
     }
-    this.authService.isLoading.update(()=>false);
+    this.authService.isLoading.update(() => false);
   }
 
   navigateToDetails(
@@ -124,7 +123,7 @@ export class HouseholderRequestComponent implements OnInit {
     });
     dialog.afterClosed().subscribe({
       next: (res) => {
-        if(res) {
+        if (res) {
           this.filteredBookings.map((curr) => {
             if (curr.request_id == requestId) curr.scheduled_time = res;
           });
@@ -145,7 +144,7 @@ export class HouseholderRequestComponent implements OnInit {
     });
     dialog.afterClosed().subscribe((response) => {
       if (response) {
-        this.authService.isLoading.update(()=>true);
+        this.authService.isLoading.update(() => true);
         if (this.userRole === Role.householder) {
           this.householderService.cancelServiceRequest(requestId).subscribe({
             next: (response) => {
@@ -162,12 +161,14 @@ export class HouseholderRequestComponent implements OnInit {
                 });
               }
             },
-            error: (err) =>
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: err.error.message,
-              }),
+            error: (err) => {
+              console.log(err);
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Not Allow',
+                  detail: err.error.message,
+                });
+            },
           });
         } else {
           this.adminService.cancelServiceRequest(requestId).subscribe({
@@ -185,15 +186,17 @@ export class HouseholderRequestComponent implements OnInit {
                 });
               }
             },
-            error: (err) =>
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: err.error.message,
-              }),
+            error: (err) => {
+              console.log(err);
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Not Allow',
+                  detail: err.error.message,
+                });
+            },
           });
         }
-        this.authService.isLoading.update(()=>false);
+        this.authService.isLoading.update(() => false);
       }
     });
   }
@@ -209,7 +212,6 @@ export class HouseholderRequestComponent implements OnInit {
       this.router.navigate(['/admin/home']);
     }
   }
-
   onStatusChange() {
     this.loadBookings();
   }

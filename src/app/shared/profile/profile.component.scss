@@ -29,6 +29,10 @@
     color: #333;
     min-width: 180px;
     white-space: nowrap;
+
+    &:hover{
+      cursor: pointer;
+    }
   }
 
   .back-btn {
@@ -158,4 +162,18 @@
   &:hover {
     background-color: #4caf50;
   }
+}
+
+.footer{
+  display: flex;
+  justify-content: flex-end;
+  align-items: end;
+  width: 40rem;
+  margin-top: 5rem;
+  span{
+    width: 100%;
+    background-color: #f5f5f5;
+    color: #6c5ce7;
+  }
+  
 }

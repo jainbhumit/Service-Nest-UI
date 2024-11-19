@@ -1,7 +1,11 @@
 <div class="services-container">
 
   <header class="services-header">
-    <h1>SERVICE NEST</h1>
+    @if(userRole==='ServiceProvider') {
+      <h1 [routerLink]="'/provider/home'">SERVICE NEST</h1>
+      }@else {
+        <h1 [routerLink]="'/'+userRole?.toLocaleLowerCase()+'/home'">SERVICE NEST</h1>
+      }
     <button class="back-btn" (click)="onBack()">←</button>
     <button class="explore-btn" [routerLink]="getRouterLink('home')">EXPLORE MORE</button>
   </header>
@@ -64,7 +68,7 @@
             @if (provider.rating==0) {
             <p>Rating- {{provider.rating}}(New)</p>
             }@else {
-            <p>Rating- {{provider.rating}}</p>
+            <p>Rating- {{provider.rating}}/{{provider.rating_count}}</p>
 
             }
           </div>

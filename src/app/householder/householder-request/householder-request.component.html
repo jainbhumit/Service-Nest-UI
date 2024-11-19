@@ -1,7 +1,6 @@
 <div class="services-container">
-  <p-toast />
   <header class="services-header">
-    <h1>SERVICE NEST</h1>
+    <h1 [routerLink]="'/'+userRole?.toLowerCase()+'/home'">SERVICE NEST</h1>
     <button class="back-btn" (click)="onBack()">←</button>
   </header>
 
@@ -60,6 +59,9 @@
               @if (booking.status === 'Accepted') {
               <span class="arrow" pTooltip="accepted providers" tooltipPosition="top"
                 (click)="navigateToDetails(booking.provider_details,booking.request_id)">→</span>
+              }@else if(booking.status === 'Approved') {
+                <span class="arrow" pTooltip="approved request" tooltipPosition="top"
+                [routerLink]="'/householder/approve'">→</span>
               }
 
             </td>

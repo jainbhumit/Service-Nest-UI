@@ -63,12 +63,23 @@ export class AcceptServiceDialogComponent {
             this.dialogRef.close();
           }
         },
-        error: (err) =>
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'error accepting service',
-          }),
+        error: (err) =>{
+          if(err.error.message =='service request not found') {
+            this.messageService.add({
+              severity: 'warning',
+              summary: 'Warning',
+              detail: 'you did not have this service',
+            });
+            this.dialogRef.close();
+          }else{
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err.error.message,
+            });
+            this.dialogRef.close();
+          }
+        }
       });
     } else {
       this.adminService.getUser(this.emailForm.get('email')?.value).subscribe({

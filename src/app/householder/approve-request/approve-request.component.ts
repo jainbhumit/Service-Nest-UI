@@ -133,12 +133,14 @@ export class ApproveRequestComponent {
                 });
               }
             },
-            error: (err) =>
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: err.error.message,
-              }),
+            error: (err) => {
+              console.log(err);
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Not Allow',
+                  detail: err.error.message,
+                });
+            },
           });
         } else {
           this.adminService.cancelServiceRequest(requestId).subscribe({
@@ -151,12 +153,14 @@ export class ApproveRequestComponent {
                 });
               }
             },
-            error: (err) =>
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: err.error.message,
-              }),
+            error: (err) => {
+              console.log(err);
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Not Allow',
+                  detail: err.error.message,
+                });
+            },
           });
         }
         this.authService.isLoading.update(() => false);
@@ -185,5 +189,11 @@ export class ApproveRequestComponent {
       width: '450px',
       data: { service_id: serviceId, provider_id: providerId },
     });
+  }
+
+  canLeaveReview(scheduledTime: string): boolean {
+    const currentTime = new Date();
+    const scheduledDate = new Date(scheduledTime);
+    return currentTime > scheduledDate;
   }
 }

@@ -64,6 +64,7 @@ export class RequestCategoryComponent implements OnInit {
                     name: curr.provider_name,
                     rating: curr.avg_rating,
                     price: curr.price,
+                    rating_count:curr.rating_count
                   });
                   return (acc += curr.price);
                 }, 0) / response.data.length;

@@ -23,6 +23,7 @@ export type ProviderDetail = {
   name: string;
   rating: number;
   price: number;
+  rating_count:number
 };
 
 export type RequestBody = {

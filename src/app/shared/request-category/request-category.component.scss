@@ -29,6 +29,10 @@
     color: #333;
     min-width: 180px;
     white-space: nowrap;
+
+    &:hover{
+      cursor: pointer;
+    }
   }
 
   .explore-btn {

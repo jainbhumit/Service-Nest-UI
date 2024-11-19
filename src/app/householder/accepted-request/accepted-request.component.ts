@@ -9,6 +9,7 @@ import { AuthService } from '../../services/auth.service';
 
 import { Booking } from '../../models/service.model';
 import { Role } from '../../config';
+import { BrowserModule } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-accepted-request',
