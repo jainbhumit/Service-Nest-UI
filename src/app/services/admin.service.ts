@@ -12,6 +12,7 @@ import {
   ServiceCategory,
 } from '../models/service.model';
 import { AdminUser } from '../models/user.model';
+import { AddReviewFormComponent } from '../householder/add-review-form/add-review-form.component';
 
 @Injectable({
   providedIn: 'root',
@@ -77,7 +78,8 @@ export class AdminService {
   }> {
     let params = new HttpParams()
       .set('limit', itemsPerPage)
-      .set('offset', (currentPage - 1) * itemsPerPage);
+      .set('offset', (currentPage - 1) * itemsPerPage)
+      .set('user_id',this.userId);
 
     if (selectedStatus) {
       params = params.set('status', selectedStatus);
@@ -140,8 +142,8 @@ export class AdminService {
   }> {
     let params = new HttpParams()
       .set('limit', itemsPerPage)
-      .set('offset', (currentPage - 1) * itemsPerPage);
-
+      .set('offset', (currentPage - 1) * itemsPerPage)
+      .set('user_id',this.userId);
     if (selectedStatus) {
       params = params.set('order', selectedStatus);
     }

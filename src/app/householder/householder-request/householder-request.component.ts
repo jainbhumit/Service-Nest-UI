@@ -25,7 +25,6 @@ export class HouseholderRequestComponent implements OnInit {
   private authService = inject(AuthService);
   private householderService = inject(HouseholderService);
   private dialog = inject(MatDialog);
-  private datePipe = inject(DatePipe);
   private router: Router = inject(Router);
   private messageService = inject(MessageService);
   private adminService = inject(AdminService);
@@ -71,7 +70,7 @@ export class HouseholderRequestComponent implements OnInit {
         });
     } else {
       this.adminService
-        .fetchBookings(this.itemsPerPage, this.currentPage, '')
+        .fetchBookings(this.itemsPerPage, this.currentPage, this.selectedStatus)
         .subscribe({
           next: (response) => {
             if (response.message === 'No service request found') {

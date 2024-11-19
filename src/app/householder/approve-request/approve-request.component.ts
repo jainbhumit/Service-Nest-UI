@@ -87,9 +87,9 @@ export class ApproveRequestComponent {
           next: (response) => {
             if (response.message === 'No service request found') {
               console.log('No service Request Found');
-              this.approveRequests = [];
+              this.filteredRequests = [];
             } else {
-              this.approveRequests = response.data;
+              this.filteredRequests = response.data;
               this.apiResponseEnd = response.data.length < this.itemsPerPage;
             }
           },

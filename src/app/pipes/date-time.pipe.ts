@@ -6,7 +6,7 @@ import { inject, Pipe, PipeTransform } from '@angular/core';
   standalone: true,
 })
 export class DateTimePipe implements PipeTransform {
-  datePipe = inject(DatePipe);
+  constructor(private datePipe: DatePipe){}
   transform(dateString: string) {
     dateString = dateString.replace('T', ' ');
     dateString = dateString.replace('Z', '');

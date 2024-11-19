@@ -14,7 +14,7 @@ import {
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = BaseUrl; // Base URL for API
+  private apiUrl = BaseUrl;
   private isAuthenticated$ = new BehaviorSubject<boolean>(this.hasToken());
   userRole = signal<Role | undefined>(undefined);
   isLoading = signal(false); 
@@ -28,12 +28,10 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
       tap((response: any) => {
         if (response && response.data && response.data.token) {
-          console.log(response);
           this.setToken(response.data.token);
           this.getRole(response.data.token);
           this.isAuthenticated$.next(true);
         }
-        console.log(response);
       })
     );
   }
