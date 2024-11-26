@@ -1,0 +1,38 @@
+<div class="login-container">
+  <div class="login-box">
+    <div class="login-content">
+      <h1 class="logo">SERVICE NEST</h1>
+
+      <form class="login-form" [formGroup]="otpForm" (ngSubmit)="generateOtp()">
+        <div class="form-group">
+          <div class="input-wrapper">
+            @if (!email?.pristine && email?.invalid) {
+            <i class="fas fa-user">*</i>
+            }
+            <input type="text" placeholder="Email" required formControlName="email">
+          </div>
+        </div>
+          @if (errorMessage!='') {
+          <div class="err">
+            <span [ngStyle]="{'color':'red'}">{{errorMessage}}</span>
+          </div>
+          }
+
+        <div class="form-actions">
+          <button type="submit" class="login-button">Verify</button>
+        </div>
+
+        <div class="signup-prompt">
+          Don't have account
+          <a href="/signup" class="signup-link">Signup</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="image-wrapper">
+      <div class="hexagon">
+        <img src="assets/hero.png" alt="Hero">
+      </div>
+    </div>
+  </div>
+</div>

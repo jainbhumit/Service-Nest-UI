@@ -4,14 +4,14 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
-import { Role } from '../../config';
-import { jwtDecode } from 'jwt-decode';
+import { Role, TestTokenAdmin, TestTokenHouseholder, TestTokenProvider } from '../../config';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let authServiceSpy: jasmine.SpyObj<AuthService>;
   let routerSpy: jasmine.SpyObj<Router>;
-
+  let httpMock: HttpTestingController;
   beforeEach(async () => {
     authServiceSpy = jasmine.createSpyObj(AuthService, ['login', 'isLoading', 'userRole']);
     authServiceSpy.isLoading = { update: jasmine.createSpy() } as any;
@@ -20,7 +20,7 @@ describe('LoginComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [LoginComponent],
-      imports: [ReactiveFormsModule],
+      imports: [ReactiveFormsModule,HttpClientTestingModule],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
         { provide: Router, useValue: routerSpy },
@@ -29,8 +29,13 @@ describe('LoginComponent', () => {
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
+    httpMock = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
   });
+
+  afterEach(() =>{
+    httpMock.verify();
+  })
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -96,4 +101,71 @@ describe('LoginComponent', () => {
     expect(component.errorMessage).toBe('');
     expect(authServiceSpy.login).not.toHaveBeenCalled();
   });
+
+  it('should login successfully by householder',() => {
+    const loginForm = component.loginForm;
+    loginForm.controls['email'].setValue('test@gmail.com');
+    loginForm.controls['password'].setValue('Test@123');
+    
+    authServiceSpy.login.and.returnValue(of({
+      status:'success',
+      message:'success',
+      data:{
+        token:TestTokenHouseholder
+      }
+    }))
+
+    component.Login();
+    expect(authServiceSpy.login).toHaveBeenCalledWith({
+      email: 'test@gmail.com',
+      password: 'Test@123',
+    });
+    expect(authServiceSpy.userRole.set).toHaveBeenCalledWith(Role.householder);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/householder/home']);
+
+  })
+
+  it('should login successfully by serviceProvider',() => {
+    const loginForm = component.loginForm;
+    loginForm.controls['email'].setValue('test@gmail.com');
+    loginForm.controls['password'].setValue('Test@123');
+    
+    authServiceSpy.login.and.returnValue(of({
+      status:'success',
+      message:'success',
+      data:{
+        token:TestTokenProvider
+      }
+    }))
+
+    component.Login();
+    expect(authServiceSpy.login).toHaveBeenCalledWith({
+      email: 'test@gmail.com',
+      password: 'Test@123',
+    });
+    expect(authServiceSpy.userRole.set).toHaveBeenCalledWith(Role.serviceProvider);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/provider/home']);
+  })
+
+  it('should login successfully by admin',() => {
+    const loginForm = component.loginForm;
+    loginForm.controls['email'].setValue('test@gmail.com');
+    loginForm.controls['password'].setValue('Test@123');
+    
+    authServiceSpy.login.and.returnValue(of({
+      status:'success',
+      message:'success',
+      data:{
+        token:TestTokenAdmin
+      }
+    }))
+
+    component.Login();
+    expect(authServiceSpy.login).toHaveBeenCalledWith({
+      email: 'test@gmail.com',
+      password: 'Test@123',
+    });
+    expect(authServiceSpy.userRole.set).toHaveBeenCalledWith(Role.admin);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/admin/home']);
+  })
 });

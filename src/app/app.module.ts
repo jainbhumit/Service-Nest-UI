@@ -61,6 +61,7 @@ import { ServicesComponent } from './admin/view-services/view-services.component
 import { DateTimePipe } from './pipes/date-time.pipe';
 import { AveragePipe } from './pipes/average.pipe';
 import { NoDataFoundComponent } from './shared/no-data-found/no-data-found.component';
+import { GenerateOtpComponent } from './shared/generate-otp/generate-otp.component';
 
 @NgModule({
   declarations: [
@@ -90,7 +91,8 @@ import { NoDataFoundComponent } from './shared/no-data-found/no-data-found.compo
     AdminAddCategoryComponent,
     ServicesComponent,
     AveragePipe,
-    NoDataFoundComponent
+    NoDataFoundComponent,
+    GenerateOtpComponent
   ],
   imports: [
     BrowserModule,

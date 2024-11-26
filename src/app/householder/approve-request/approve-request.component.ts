@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { MatDialog } from '@angular/material/dialog';
@@ -21,7 +20,6 @@ import { Role } from '../../config';
   styleUrl: './approve-request.component.scss',
 })
 export class ApproveRequestComponent {
-  approveRequests: ApproveRequests[] = [];
   filteredRequests: ApproveRequests[] = [];
   selectedStatus: string = '';
   userRole: string | undefined;
@@ -29,7 +27,6 @@ export class ApproveRequestComponent {
   private authService = inject(AuthService);
   private householderService = inject(HouseholderService);
   private dialog = inject(MatDialog);
-  private datePipe = inject(DatePipe);
   private router: Router = inject(Router);
   private messageService = inject(MessageService);
 

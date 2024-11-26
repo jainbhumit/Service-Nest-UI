@@ -10,8 +10,8 @@
       <label for="statusFilter">Filter:</label>
       <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="onStatusChange()">
         <option value="">All</option>
-        <option value="Pending">Rating(high-low)</option>
-        <option value="Accepted">Price(high-low)</option>
+        <option value="Rating(high-low)">Rating(high-low)</option>
+        <option value="Price(low-high)">Price(low-high)</option>
       </select>
     </div>
     <div class="table-container">
@@ -27,7 +27,7 @@
           </tr>
         </thead>
         <tbody>
-          @for(provider of providerDetail;track $index) {
+          @for(provider of filteredProviderDetail;track $index) {
           <tr>
             <td>{{provider.name | uppercase}}</td>
             <td>{{provider.address | uppercase}}</td>

@@ -58,7 +58,7 @@
                 (click)="cancelRequest(booking.request_id)">❌</button>
               @if (booking.status === 'Accepted') {
               <span class="arrow" pTooltip="accepted providers" tooltipPosition="top"
-                (click)="navigateToDetails(booking.provider_details,booking.request_id)">→</span>
+                (click)="navigateToDetails(booking.provider_details!,booking.request_id)">→</span>
               }@else if(booking.status === 'Approved') {
                 <span class="arrow" pTooltip="approved request" tooltipPosition="top"
                 [routerLink]="'/householder/approve'">→</span>

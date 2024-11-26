@@ -41,16 +41,18 @@ export type Booking = {
   scheduled_time: string;
   status: string;
   approve_status: boolean;
-  provider_details?: {
-    service_provider_id: string;
-    name: string;
-    contact: string;
-    address: string;
-    price: string;
-    rating: number;
-    approve: boolean;
-  }[];
+  provider_details?: ProviderInfo[];
 };
+
+export type ProviderInfo = {
+  service_provider_id: string;
+  name: string;
+  contact: string;
+  address: string;
+  price: string;
+  rating: number;
+  approve: boolean;
+}
 
 export type ApproveRequests = {
   request_id: string;

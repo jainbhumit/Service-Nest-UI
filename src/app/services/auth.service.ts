@@ -15,9 +15,9 @@ import {
 })
 export class AuthService {
   private apiUrl = BaseUrl;
-  private isAuthenticated$ = new BehaviorSubject<boolean>(this.hasToken());
   userRole = signal<Role | undefined>(undefined);
   isLoading = signal(false); 
+  isOtpSent:boolean =false;
   constructor(private http: HttpClient) {}
 
   signup(data: SignupData): Observable<any> {
@@ -30,14 +30,13 @@ export class AuthService {
         if (response && response.data && response.data.token) {
           this.setToken(response.data.token);
           this.getRole(response.data.token);
-          this.isAuthenticated$.next(true);
         }
       })
     );
   }
 
   forgetPassword(data: ForgetPasswordData) {
-    return this.http.put(`${this.apiUrl}/forget`, data);
+    return this.http.put(`${this.apiUrl}/forgot`, data);
   }
 
   private setToken(token: string): void {
@@ -50,7 +49,6 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(TokenKey);
-    this.isAuthenticated$.next(false);
   }
 
   getRole(token: string) {
@@ -69,7 +67,16 @@ export class AuthService {
     return !!this.getToken();
   }
 
-  isAuthenticated(): Observable<boolean> {
-    return this.isAuthenticated$.asObservable();
+  generateOtp(email:string):Observable<
+  {
+    status:string;
+    message:string;
+  }>{
+    return this.http.post<{
+      status:string,
+    message:string
+    }>(`${this.apiUrl}/otp`, {email:email});
   }
+
+
 }

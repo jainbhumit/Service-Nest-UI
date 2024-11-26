@@ -7,9 +7,8 @@ import { HouseholderService } from '../../services/householder.service';
 import { AdminService } from '../../services/admin.service';
 import { AuthService } from '../../services/auth.service';
 
-import { Booking } from '../../models/service.model';
+import { Booking, ProviderInfo } from '../../models/service.model';
 import { Role } from '../../config';
-import { BrowserModule } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-accepted-request',
@@ -17,7 +16,7 @@ import { BrowserModule } from '@angular/platform-browser';
   styleUrl: './accepted-request.component.scss',
 })
 export class AcceptedRequestComponent implements OnInit {
-  providerDetail: Booking['provider_details'] = [];
+  providerDetail: ProviderInfo[] = [];
   private authService = inject(AuthService);
   userRole: string | undefined;
   private adminService = inject(AdminService);
@@ -26,7 +25,7 @@ export class AcceptedRequestComponent implements OnInit {
   private messageService = inject(MessageService);
   private router: Router = inject(Router);
   selectedStatus: string = '';
-  filteredProviderDetail: Booking['provider_details'] = [];
+  filteredProviderDetail:ProviderInfo[] = [];
   apiResponseEnd: boolean = false;
   currentPage: number = 1;
   itemPerPage: number = 8;
@@ -35,7 +34,7 @@ export class AcceptedRequestComponent implements OnInit {
   ngOnInit(): void {
     this.userRole = this.authService.userRole();
     this.providerDetail = this.householderService.currentAcceptRequestDetail()
-      .provider_details as [];
+      .provider_details;
     this.totalCount =
       this.householderService.currentAcceptRequestDetail().provider_details.length;
     this.authService.isLoading.update(() => true);

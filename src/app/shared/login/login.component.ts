@@ -28,6 +28,7 @@ export class LoginComponent {
   router: Router = inject(Router);
   errorMessage = '';
   isLoading:boolean = false;
+  userRole:Role|undefined
 
   loginForm = new FormGroup({
     email: new FormControl('', {
@@ -65,14 +66,13 @@ export class LoginComponent {
             typeof decodedToken === 'object' &&
             'role' in decodedToken
           ) {
-            const userRole = (decodedToken as any).role;
-            console.log(userRole, 'calling from login ts');
-            this.authService.userRole.set(userRole);
-            if (userRole === Role.admin) {
+            this.userRole = (decodedToken as any).role;
+            this.authService.userRole.set(this.userRole);
+            if (this.userRole === Role.admin) {
               this.router.navigate(['/admin/home']);
-            } else if (userRole === Role.householder) {
+            } else if (this.userRole === Role.householder) {
               this.router.navigate(['/householder/home']);
-            } else if (userRole === Role.serviceProvider) {
+            } else if (this.userRole === Role.serviceProvider) {
               this.router.navigate(['/provider/home']);
             }
           } else {

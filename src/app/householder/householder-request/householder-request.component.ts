@@ -1,5 +1,5 @@
 import { Role } from './../../config';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, Provider } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,7 +10,7 @@ import { AcceptServiceDialogComponent } from '../../provider/accept-service-dial
 
 import { HouseholderService } from '../../services/householder.service';
 import { AuthService } from '../../services/auth.service';
-import { Booking } from '../../models/service.model';
+import { Booking, ProviderInfo } from '../../models/service.model';
 import { AdminService } from '../../services/admin.service';
 
 @Component({
@@ -56,7 +56,6 @@ export class HouseholderRequestComponent implements OnInit {
         .subscribe({
           next: (response) => {
             if (response.message === 'No service request found') {
-              console.log('No service Request Found');
               this.filteredBookings = [];
             } else {
               this.filteredBookings = response.data;
@@ -73,7 +72,6 @@ export class HouseholderRequestComponent implements OnInit {
         .subscribe({
           next: (response) => {
             if (response.message === 'No service request found') {
-              console.log('No service Request Found');
               this.filteredBookings = [];
             } else {
               this.filteredBookings = response.data;
@@ -89,19 +87,18 @@ export class HouseholderRequestComponent implements OnInit {
   }
 
   navigateToDetails(
-    providerDetails: Booking['provider_details'],
+    providerDetails: ProviderInfo[],
     requestId: string
   ) {
     if ((providerDetails as []).length > 0) {
       const formatDetail: {
         request_id: string;
-        provider_details: Booking['provider_details'][];
+        provider_details: ProviderInfo[];
       } = {
         request_id: requestId,
         provider_details: providerDetails as [],
       };
       this.householderService.currentAcceptRequestDetail.set(formatDetail);
-      console.log(this.householderService.currentAcceptRequestDetail());
       if (this.userRole === Role.householder) {
         this.router.navigate(['/householder/requests/accept']);
       } else {
@@ -187,7 +184,6 @@ export class HouseholderRequestComponent implements OnInit {
               }
             },
             error: (err) => {
-              console.log(err);
                 this.messageService.add({
                   severity: 'error',
                   summary: 'Not Allow',

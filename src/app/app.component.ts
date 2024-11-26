@@ -7,7 +7,6 @@ import { AuthService } from './services/auth.service';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  title = 'serviceNest';
   private authService = inject(AuthService)
   loading = this.authService.isLoading;
 }

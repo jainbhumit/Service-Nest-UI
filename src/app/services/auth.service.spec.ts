@@ -68,14 +68,14 @@ describe('AuthService', () => {
   it('should forgot password successfully',() => {
     const mockRequestBody:ForgetPasswordData = {
       email: 'test@example.com',
-      security_answer: 'test',
+      otp: '1234',
       password: 'tests@123'
     }
     const mockResponse = {status:"success",message:"password forgot successfully"};
     service.forgetPassword(mockRequestBody).subscribe((response) => {
       expect(response).toEqual(mockResponse);
     })
-    const req = httpMock.expectOne(`http://localhost:8080/forget`);
+    const req = httpMock.expectOne(`http://localhost:8080/forgot`);
     req.flush(mockResponse);
     expect(req.request.method).toBe('PUT');
   })

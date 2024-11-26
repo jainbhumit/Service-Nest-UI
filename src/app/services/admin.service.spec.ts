@@ -19,7 +19,6 @@ describe('AdminService', () => {
   });
 
   afterEach(() => {
-    // Verify that there are no outstanding HTTP requests
     httpMock.verify();
   });
 

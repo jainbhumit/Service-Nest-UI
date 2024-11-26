@@ -95,7 +95,7 @@ export class ProfileComponent implements OnInit {
         address: this.updateForm.value.address as string,
         contact: this.updateForm.value.contact as string,
       };
-      this.authService.isLoading.update(()=>true);
+      this.authService.isLoading.set(true);
       this.userService.updateProfile(data).subscribe({
         next: (response) => {
           if (response.status == 'Success') {
@@ -121,7 +121,7 @@ export class ProfileComponent implements OnInit {
           }
         },
       });
-      this.authService.isLoading.update(()=>false);
+      this.authService.isLoading.set(false);
     } else {
       console.log('Not valid ');
     }

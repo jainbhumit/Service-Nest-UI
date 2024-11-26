@@ -16,7 +16,7 @@ export type SignupData = {
 
 export type ForgetPasswordData = {
   email: string;
-  security_answer: string;
+  otp: string;
   password: string;
 };
 export interface JwtPayload {

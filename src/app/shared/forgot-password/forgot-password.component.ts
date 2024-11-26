@@ -10,6 +10,7 @@ import { MessageService } from 'primeng/api';
 import { ForgetPasswordData } from '../../models/auth.model';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { min } from 'rxjs';
 
 function validPassword(control: AbstractControl) {
   const password = control.value;
@@ -27,6 +28,7 @@ export class ForgotPasswordComponent {
   private router: Router = inject(Router);
   private messageService = inject(MessageService);
   errorMessage: string = '';
+  otpStatus:boolean = false
   forgotForm = new FormGroup({
     email: new FormControl('', {
       validators: [Validators.required, Validators.email],
@@ -34,7 +36,7 @@ export class ForgotPasswordComponent {
     updatedPassword: new FormControl('', {
       validators: [Validators.required, validPassword],
     }),
-    securityAnswer: new FormControl('', {
+    otp: new FormControl('', {
       validators: [Validators.required],
     }),
   });
@@ -47,15 +49,21 @@ export class ForgotPasswordComponent {
     return this.forgotForm.get('updatedPassword');
   }
 
-  get securityAnswer() {
-    return this.forgotForm.get('securityAnswer');
+  get otp() {
+    return this.forgotForm.get('otp');
   }
-
+  OnGenerate(event:{email:string,status:boolean}) {
+    if(event.status) {
+      this.otpStatus =true;
+      this.forgotForm.get('email')?.setValue(event.email);
+      this.forgotForm.get('email')?.disable();
+    }
+  }
   ForgotPassword() {
     if (this.forgotForm.valid) {
       const updatedData: ForgetPasswordData = {
         email: this.email?.value as string,
-        security_answer: this.securityAnswer?.value as string,
+        otp: this.otp?.value as string,
         password: this.password?.value as string,
       };
       this.authService.isLoading.update(()=>true);

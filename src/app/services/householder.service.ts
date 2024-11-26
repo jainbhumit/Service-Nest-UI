@@ -4,6 +4,7 @@ import { Observable, tap } from 'rxjs';
 import {
   ApproveRequests,
   Booking,
+  ProviderInfo,
   RequestBody,
   Review,
   Service,
@@ -17,7 +18,7 @@ import { UserProfile } from '../models/user.model';
 export class HouseholderService {
   currentAcceptRequestDetail = signal<{
     request_id: string;
-    provider_details: Booking['provider_details'][];
+    provider_details: ProviderInfo[];
   }>({
     request_id: '',
     provider_details: [],
