@@ -36,7 +36,7 @@ export const authGuard: CanActivateFn = (route, state) => {
       }
     } catch (error) {
       console.error('Error decoding token:', error);
-      return router.parseUrl('/login'); 
+      return router.parseUrl('/login');
     }
   }
   

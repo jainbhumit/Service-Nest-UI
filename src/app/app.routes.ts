@@ -17,6 +17,7 @@ import { ProviderViewRequestComponent } from './provider/provider-view-request/p
 import { ProviderApproveRequestComponent } from './provider/provider-approve-request/provider-approve-request.component';
 import { ProviderReviewComponent } from './provider/provider-review/provider-review.component';
 import { ServicesComponent } from './admin/view-services/view-services.component';
+import { NotfoundComponent } from './shared/notfound/notfound.component';
 
 export const routes: Routes = [
   {
@@ -26,18 +27,23 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+    title:'Service Nest - Login'
   },
   {
     path: 'signup',
     component: SignupComponent,
+    title:'Service Nest - Signup',
   },
   {
     path: 'forgot',
     component: ForgotPasswordComponent,
+    title:'Service Nest - Forgot'
   },
   {
     path: 'user/profile',
     component: ProfileComponent,
+    title:'Service Nest - Profile'
+
   },
   {
     path: 'unauthorized',
@@ -145,4 +151,8 @@ export const routes: Routes = [
       },
     ],
   },
+  {
+   path:'**',
+   component:NotfoundComponent
+  }
 ];

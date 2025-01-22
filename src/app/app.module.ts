@@ -47,6 +47,8 @@ import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { EditRequestDialogComponent } from './householder/edit-request-dialog/edit-request-dialog.component';
 import { ConfirmCancelRequestComponentComponent } from './householder/confirm-cancel-request-component/confirm-cancel-request-component.component';
 import { MessageService } from 'primeng/api';
+import { InputOtpModule } from 'primeng/inputotp';
+
 import { AcceptedRequestComponent } from './householder/accepted-request/accepted-request.component';
 import { ApproveRequestComponent } from './householder/approve-request/approve-request.component';
 import { AddReviewFormComponent } from './householder/add-review-form/add-review-form.component';
@@ -62,6 +64,7 @@ import { DateTimePipe } from './pipes/date-time.pipe';
 import { AveragePipe } from './pipes/average.pipe';
 import { NoDataFoundComponent } from './shared/no-data-found/no-data-found.component';
 import { GenerateOtpComponent } from './shared/generate-otp/generate-otp.component';
+import { NotfoundComponent } from './shared/notfound/notfound.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +95,8 @@ import { GenerateOtpComponent } from './shared/generate-otp/generate-otp.compone
     ServicesComponent,
     AveragePipe,
     NoDataFoundComponent,
-    GenerateOtpComponent
+    GenerateOtpComponent,
+    NotfoundComponent
   ],
   imports: [
     BrowserModule,
@@ -110,7 +114,8 @@ import { GenerateOtpComponent } from './shared/generate-otp/generate-otp.compone
     MatNativeDateModule,
     ToastModule,
     DateTimePipe,
-    TooltipModule
+    TooltipModule,
+    InputOtpModule
   ],
   providers: [
     DatePipe,

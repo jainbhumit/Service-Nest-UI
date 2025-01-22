@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewEncapsulation } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -10,7 +10,7 @@ import { MessageService } from 'primeng/api';
 import { ForgetPasswordData } from '../../models/auth.model';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { min } from 'rxjs';
+
 
 function validPassword(control: AbstractControl) {
   const password = control.value;
@@ -28,7 +28,7 @@ export class ForgotPasswordComponent {
   private router: Router = inject(Router);
   private messageService = inject(MessageService);
   errorMessage: string = '';
-  otpStatus:boolean = false
+  otpStatus:boolean = false;
   forgotForm = new FormGroup({
     email: new FormControl('', {
       validators: [Validators.required, Validators.email],
