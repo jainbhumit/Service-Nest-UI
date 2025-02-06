@@ -1,3 +1,6 @@
+@if(isLoading) {
+  <app-spinner></app-spinner>
+}
 <div class="services-container">
   <header class="services-header">
     <h1>SERVICE NEST</h1>
@@ -35,7 +38,7 @@
       @for (service of filteredServices; track $index) {
       <div class="service-card" (click)="onServiceClick(service)">
         <div class="service-image">
-          <img [src]="getServiceImg(service.name)" [alt]="service.name">
+          <img [src]="service.imageUrl" [alt]="service.name">
         </div>
         <h3>{{service.name | uppercase}}</h3>
         @if (role==='Admin') {

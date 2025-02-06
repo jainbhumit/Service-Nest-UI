@@ -1,3 +1,6 @@
+@if(isLoading) {
+  <app-spinner></app-spinner>
+}
 <h2 mat-dialog-title>Leave Review</h2>
 <form [formGroup]="addReviewForm" (ngSubmit)="onSubmit()" mat-dialog-content>
   <mat-form-field appearance="fill">

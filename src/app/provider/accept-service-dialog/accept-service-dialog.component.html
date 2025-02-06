@@ -1,3 +1,6 @@
+@if(isLoading) {
+  <app-spinner></app-spinner>
+}
 @if (userRole==='ServiceProvider') {
 <h2 mat-dialog-title>Accept Service</h2>
 <form [formGroup]="acceptServiceForm" (ngSubmit)="onSubmit()" mat-dialog-content>

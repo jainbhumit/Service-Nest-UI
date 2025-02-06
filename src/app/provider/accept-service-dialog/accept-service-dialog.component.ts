@@ -20,6 +20,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class AcceptServiceDialogComponent {
   userRole: Role | undefined = this.authService.userRole();
+  isLoading: boolean = false;
   constructor(
     private adminService: AdminService,
     private authService: AuthService,
@@ -27,7 +28,7 @@ export class AcceptServiceDialogComponent {
     private dialogRef: MatDialogRef<AcceptServiceDialogComponent>,
     private messageService: MessageService,
     private dialog: MatDialog,
-    @Inject(MAT_DIALOG_DATA) public data: { request_id: string }
+    @Inject(MAT_DIALOG_DATA) public data: { request_id: string , service_id:string, status:string}
   ) {}
   acceptServiceForm: FormGroup = new FormGroup({
     price: new FormControl('', [Validators.required]),
@@ -39,11 +40,14 @@ export class AcceptServiceDialogComponent {
 
   onSubmit() {
     if (this.userRole === 'ServiceProvider') {
-      const body: { request_id: string; price: string } = {
+      const body: { request_id: string; price: string; service_id:string; status:string } = {
         request_id: this.data.request_id,
         price: this.acceptServiceForm.get('price')?.value,
+        service_id:this.data.service_id,
+        status: this.data.status
       };
       console.log(body);
+      this.isLoading = true
       this.providerService.acceptServiceRequest(body).subscribe({
         next: (response) => {
           console.log(response);
@@ -62,6 +66,7 @@ export class AcceptServiceDialogComponent {
             });
             this.dialogRef.close();
           }
+          this.isLoading = false;
         },
         error: (err) =>{
           if(err.error.message =='service request not found') {
@@ -79,22 +84,27 @@ export class AcceptServiceDialogComponent {
             });
             this.dialogRef.close();
           }
+          this.isLoading = false;
         }
       });
     } else {
+      this.isLoading = true
       this.adminService.getUser(this.emailForm.get('email')?.value).subscribe({
         next: (response) => {
           if (response.data) {
             this.adminService.userId = response.data.id;
             this.dialogRef.close(true);
           }
+          this.isLoading = false;
         },
-        error: (err) =>
+        error: (err) => {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
             detail: err.error.message,
-          }),
+          })
+          this.isLoading = false;
+        }
       });
     }
   }

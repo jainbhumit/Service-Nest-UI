@@ -29,6 +29,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule} from 'primeng/tooltip'
+import { MatIconModule } from '@angular/material/icon';
 
 import { routes } from './app.routes';
 import { ProviderHomeComponent } from './provider/provider-home/provider-home.component';
@@ -65,6 +66,8 @@ import { AveragePipe } from './pipes/average.pipe';
 import { NoDataFoundComponent } from './shared/no-data-found/no-data-found.component';
 import { GenerateOtpComponent } from './shared/generate-otp/generate-otp.component';
 import { NotfoundComponent } from './shared/notfound/notfound.component';
+import { FilterPipe } from './pipes/sanitize.pipe';
+import { MatButtonModule, MatIconAnchor, MatIconButton } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -94,6 +97,7 @@ import { NotfoundComponent } from './shared/notfound/notfound.component';
     AdminAddCategoryComponent,
     ServicesComponent,
     AveragePipe,
+    FilterPipe,
     NoDataFoundComponent,
     GenerateOtpComponent,
     NotfoundComponent
@@ -108,10 +112,14 @@ import { NotfoundComponent } from './shared/notfound/notfound.component';
     RouterOutlet,
     MatDialogModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
     ReactiveFormsModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatIconModule,
+    MatInputModule,
+    MatButtonModule,
     ToastModule,
     DateTimePipe,
     TooltipModule,

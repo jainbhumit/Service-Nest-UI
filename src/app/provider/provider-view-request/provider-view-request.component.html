@@ -1,5 +1,7 @@
+@if(isLoading) {
+  <app-spinner></app-spinner>
+}
 <div class="services-container">
-
   <header class="services-header">
     <h1 routerLink="/provider/home">SERVICE NEST</h1>
     <button class="back-btn" (click)="onBack()">←</button>
@@ -39,13 +41,13 @@
           }
           @for(request of paginatedRequest;track $index) {
           <tr>
-            <td>{{request.request_id}}</td>
+            <td>{{request.request_id | filter}}</td>
             <td>{{request.service_name || 'N/A'}}</td>
             <td>{{request.scheduled_time | datetime}}</td>
             <td>{{request.description}}</td>
             <td>{{request.address}}</td>
             <td class="actions">
-              <button class="btn update" (click)="acceptRequest(request.request_id)">Accept</button>
+              <button class="btn update" (click)="acceptRequest(request.request_id,request.service_id,request.status)">Accept</button>
             </td>
 
           </tr>

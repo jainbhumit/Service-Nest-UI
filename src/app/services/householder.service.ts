@@ -4,6 +4,7 @@ import { Observable, tap } from 'rxjs';
 import {
   ApproveRequests,
   Booking,
+  EvaluatedKey,
   ProviderInfo,
   RequestBody,
   Review,
@@ -18,9 +19,13 @@ import { UserProfile } from '../models/user.model';
 export class HouseholderService {
   currentAcceptRequestDetail = signal<{
     request_id: string;
+    status:string;
+    service_id:string;
     provider_details: ProviderInfo[];
   }>({
     request_id: '',
+    status:'',
+    service_id:'',
     provider_details: [],
   });
   private apiUrl = `${BaseUrl}${ApiUrlWithUser}`;
@@ -28,11 +33,11 @@ export class HouseholderService {
   constructor(private http: HttpClient) {}
 
   getServiceByCategory(
-    categoryName: string
+    categoryId: string
   ): Observable<{ status: string; message: string; data: Service[] }> {
-    console.log(`in service category name is : ${categoryName}`);
+    console.log(`in service category name is : ${categoryId}`);
     return this.http.get<{ status: string; message: string; data: Service[] }>(
-      `${this.apiUrl}/services?category=${categoryName}`
+      `${this.apiUrl}/services?category_id=${categoryId}`
     );
   }
 
@@ -62,30 +67,39 @@ export class HouseholderService {
 
   fetchBookings(
     itemsPerPage: number,
-    currentPage: number,
+    lastEvaluatedKey: EvaluatedKey | null,
     selectedStatus: string
   ): Observable<{
     status: string;
     message: string;
-    data: Booking[];
+    data: {
+      serviceRequests: Booking[]
+      lastEvaluatedKey:EvaluatedKey | null
+    };
   }> {
     let params = new HttpParams()
-      .set('limit', itemsPerPage)
-      .set('offset', (currentPage - 1) * itemsPerPage);
+      .set('limit', itemsPerPage);
 
     if (selectedStatus) {
       params = params.set('status', selectedStatus);
     }
-
+    const EvaluatedKey = {
+      PK: { S: lastEvaluatedKey?.PK.Value},
+      SK: { S: lastEvaluatedKey?.SK.Value }
+    };
+    
     return this.http
-      .get<{
+      .post<{
         status: string;
         message: string;
-        data: Booking[];
-      }>(`${this.apiUrl}/bookings`, { params })
+        data:{
+          serviceRequests: Booking[]
+          lastEvaluatedKey:EvaluatedKey | null
+        };
+      }>(`${this.apiUrl}/bookings`,EvaluatedKey, { params })
       .pipe(
         tap((response) => {
-          this.bookings = response.data;
+          this.bookings = response.data.serviceRequests;
         })
       );
   }
@@ -94,27 +108,29 @@ export class HouseholderService {
     return this.bookings;
   }
 
-  cancelServiceRequest(requestId: string): Observable<{
+  cancelServiceRequest(requestId: string,status:string): Observable<{
     status: string;
     message: string;
   }> {
     return this.http.patch<{
       status: string;
       message: string;
-    }>(`${this.apiUrl}/services/request/${requestId}`, null);
+    }>(`${this.apiUrl}/services/request/${requestId}?status=${status}`,null);
   }
 
   updateServiceRequest(data: {
     id: string;
     scheduled_time: string;
-  }): Observable<{
+  },status:string): Observable<{
     status: string;
     message: string;
   }> {
+    let params = new HttpParams()
+      .set('status',status );
     return this.http.put<{
       status: string;
       message: string;
-    }>(`${this.apiUrl}/services/request`, data);
+    }>(`${this.apiUrl}/services/request`, data,{params});
   }
 
   approveRequest(body: {

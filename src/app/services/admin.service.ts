@@ -7,6 +7,7 @@ import { ApiUrlWithUser, BaseUrl } from '../config';
 import {
   ApproveRequests,
   Booking,
+  EvaluatedKey,
   ProviderServiceDetail,
   RequestBody,
   ServiceCategory,
@@ -35,10 +36,16 @@ export class AdminService {
   addService(body: { category_name: string; description: string }): Observable<{
     status: string;
     message: string;
+    data : {
+      pre_signed_url:string;
+    }
   }> {
     return this.http.post<{
       status: string;
       message: string;
+      data : {
+        pre_signed_url:string;
+      }
     }>(`${this.apiUrl}/service`, body);
   }
 
@@ -69,33 +76,41 @@ export class AdminService {
 
   fetchBookings(
     itemsPerPage: number,
-    currentPage: number,
+    lastEvaluatedKey: EvaluatedKey | null,
     selectedStatus: string
   ): Observable<{
     status: string;
     message: string;
-    data: Booking[];
+    data: {
+      serviceRequests: Booking[]
+      lastEvaluatedKey:EvaluatedKey | null
+    };
   }> {
     let params = new HttpParams()
       .set('limit', itemsPerPage)
-      .set('offset', (currentPage - 1) * itemsPerPage)
       .set('user_id',this.userId);
-
+    const EvaluatedKey = {
+        PK: { S: lastEvaluatedKey?.PK.Value},
+        SK: { S: lastEvaluatedKey?.SK.Value }
+      };
     if (selectedStatus) {
       params = params.set('status', selectedStatus);
     }
-    return this.http.get<{
+    return this.http.post<{
       status: string;
       message: string;
-      data: Booking[];
-    }>(`${this.apiUserUrl}/bookings`, { params });
+      data:  {
+        serviceRequests: Booking[]
+        lastEvaluatedKey:EvaluatedKey | null
+      };
+    }>(`${this.apiUserUrl}/bookings`,EvaluatedKey, { params });
   }
 
-  cancelServiceRequest(requestId: string): Observable<{
+  cancelServiceRequest(requestId: string,status:string): Observable<{
     status: string;
     message: string;
   }> {
-    const params = { user_id: this.userId };
+    const params = { user_id: this.userId,status:status};
     console.log('in service :', params);
     return this.http.patch<{
       status: string;
@@ -106,11 +121,11 @@ export class AdminService {
   updateServiceRequest(data: {
     id: string;
     scheduled_time: string;
-  }): Observable<{
+  },status: string): Observable<{
     status: string;
     message: string;
   }> {
-    const params = { user_id: this.userId };
+    const params = { user_id: this.userId , status:status};
     return this.http.put<{
       status: string;
       message: string;
@@ -157,7 +172,8 @@ export class AdminService {
 
   fetchServices(
     itemsPerPage: number,
-    currentPage: number
+    currentPage: number,
+    status:string
   ): Observable<{
     status: string;
     message: string;
@@ -166,6 +182,7 @@ export class AdminService {
     const params = {
       limit: itemsPerPage,
       offset: (currentPage - 1) * itemsPerPage,
+      category_id: status
     };
     return this.http.get<{
       status: string;

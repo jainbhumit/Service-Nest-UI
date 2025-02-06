@@ -1,17 +1,61 @@
+@if(isLoading) {
+  <app-spinner></app-spinner>
+}
+
 <h2 mat-dialog-title>Add Category</h2>
+
 <form [formGroup]="addCategoryForm" (ngSubmit)="onSubmit()" mat-dialog-content>
   <mat-form-field appearance="fill">
     <mat-label>Category Name</mat-label>
     <input matInput formControlName="name" placeholder="Enter category name">
+    @if(addCategoryForm.get('name')?.invalid && addCategoryForm.get('name')?.touched) {
+      <mat-error>Category name is required</mat-error>
+    }
   </mat-form-field>
 
   <mat-form-field appearance="fill">
     <mat-label>Description</mat-label>
-    <input matInput formControlName="description">
+    <textarea matInput formControlName="description" rows="3"></textarea>
+    @if(addCategoryForm.get('description')?.invalid && addCategoryForm.get('description')?.touched) {
+      <mat-error>Description is required</mat-error>
+    }
   </mat-form-field>
 
-  <div mat-dialog-actions>
-    <button mat-button color="primary" [disabled]="addCategoryForm.invalid">Add</button>
-    <button mat-button (click)="onCancel()">Cancel</button>
+  <div class="image-upload-container">
+    <button type="button" 
+            mat-stroked-button 
+            color="primary" 
+            (click)="fileInput.click()" 
+            class="upload-button">
+      <mat-icon>cloud_upload</mat-icon>
+      Choose Image
+    </button>
+    <input #fileInput 
+           type="file" 
+           accept="image/*" 
+           (change)="onFileSelected($event)" 
+           style="display: none">
+    
+    @if(imagePreview) {
+      <div class="image-preview">
+        <p>Image Uploaded Successfully</p>
+      </div>
+    }
+  </div>
+
+  <div mat-dialog-actions class="dialog-actions">
+    <button mat-button 
+            type="button" 
+            (click)="onCancel()" 
+            class="cancel-button">
+      Cancel
+    </button>
+    <button mat-button 
+            type="submit" 
+            color="primary" 
+            [disabled]="addCategoryForm.invalid || isLoading" 
+            class="submit-button">
+      Add Category
+    </button>
   </div>
 </form>

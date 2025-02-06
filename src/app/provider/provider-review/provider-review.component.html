@@ -1,5 +1,7 @@
+@if(isLoading) {
+  <app-spinner></app-spinner>
+}
 <div class="services-container">
-
   <header class="services-header">
     <h1 routerLink="/provider/home">SERVICE NEST</h1>
     <button class="back-btn" (click)="onBack()">←</button>
@@ -38,7 +40,7 @@
           }
           @for(review of filteredReview;track $index) {
           <tr>
-            <td>{{review.id}}</td>
+            <td>{{review.review_id | filter}}</td>
             <td>{{categories.get(review.service_id)}}</td>
             <td>{{review.comments}}</td>
             <td>{{review.rating}}</td>

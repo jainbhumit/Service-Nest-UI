@@ -15,6 +15,7 @@ export class UserService {
     name: '',
     description: '',
     id: '',
+    imageUrl:''
   });
   constructor(private http: HttpClient) {}
 

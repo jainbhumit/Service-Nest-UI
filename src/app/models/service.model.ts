@@ -2,6 +2,7 @@ export type ServiceCategory = {
   id: string;
   name: string;
   description: string;
+  imageUrl: string
 };
 
 export type Service = {
@@ -31,6 +32,7 @@ export type RequestBody = {
   category: string;
   description: string;
   scheduled_time: string;
+  category_id:string
 };
 
 export type Booking = {
@@ -52,6 +54,8 @@ export type ProviderInfo = {
   price: string;
   rating: number;
   approve: boolean;
+  status:string;
+  service_id:string;
 }
 
 export type ApproveRequests = {
@@ -65,6 +69,7 @@ export type ApproveRequests = {
 };
 
 export type Review = {
+  request_id:string;
   service_id: string;
   provider_id: string;
   review_text: string;
@@ -78,9 +83,11 @@ export type ProviderServiceDetail = {
   price: number;
   provider_id: string;
   category: string;
-  category_id: string;
   avg_rating: number;
   rating_count: string;
+  provider_name: string;
+  provider_contact:string;
+  provider_address:string;
 };
 
 export type AddService = {
@@ -88,6 +95,7 @@ export type AddService = {
   description: string;
   price: number;
   category: string;
+  service_id:string;
 };
 
 export type ProviderViewRequest = {
@@ -98,6 +106,7 @@ export type ProviderViewRequest = {
   scheduled_time: string;
   address: string;
   description: string;
+  status:string;
 };
 
 export type ProviderApproveRequest = {
@@ -115,7 +124,7 @@ export type ProviderApproveRequest = {
 };
 
 export type ProviderReview = {
-  id: string;
+  review_id: string;
   service_id: string;
   householder_id: string;
   provider_id: string;
@@ -123,3 +132,12 @@ export type ProviderReview = {
   comments: string;
   review_date: string;
 };
+
+export type EvaluatedKey = {
+  PK:{
+    Value:string;
+  };
+  SK:{
+    Value:string;
+  }
+}

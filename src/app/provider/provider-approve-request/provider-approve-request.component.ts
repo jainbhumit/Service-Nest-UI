@@ -23,12 +23,14 @@ export class ProviderApproveRequestComponent {
   currentPage = 1;
   itemsPerPage = 8;
   apiResponseEnd: boolean = false;
+  isLoading: boolean = false;
 
   ngOnInit(): void {
     this.loadApproveRequests();
   }
 
   loadApproveRequests(): void {
+    this.isLoading = true;
     this.providerService
       .viewApprovedRequest(this.itemsPerPage, this.currentPage,this.selectedStatus)
       .subscribe({
@@ -42,8 +44,10 @@ export class ProviderApproveRequestComponent {
             this.filteredRequests = response.data;
             this.apiResponseEnd = response.data.length < this.itemsPerPage;
           }
+          this.isLoading = false;
         },
         error: (err) => {
+          this.isLoading = false;
           console.log(err.error.message);
         },
       });

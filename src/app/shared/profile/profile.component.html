@@ -1,3 +1,6 @@
+@if(isLoading) {
+  <app-spinner></app-spinner>
+} 
 <div class="services-container">
   <header class="services-header">
     @if(userRole==='ServiceProvider') {
@@ -9,7 +12,7 @@
   </header>
 
   <nav class="sidebar">
-    <button class="nav-item" [routerLink]="'/profile'">PROFILE</button>
+    <button class="nav-item" [routerLink]="'./'">PROFILE</button>
     <button class="nav-item" [routerLink]="getRouterLink('requests')">SERVICE REQUESTS</button>
     <button class="nav-item" [routerLink]="getRouterLink('approve')">APPROVED REQUESTS</button>
     @if (userRole==='ServiceProvider') {

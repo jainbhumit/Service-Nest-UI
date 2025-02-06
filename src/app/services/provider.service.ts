@@ -66,9 +66,15 @@ export class ProviderService {
     body: AddService,
     serviceId: string
   ): Observable<{ status: string; message: string }> {
+    const newBody = {
+      name: body.name,
+      description:body.description,
+      price: body.price,
+      category:body.category
+    }
     return this.http.put<{ status: string; message: string }>(
       `${this.apiUrl}/service/${serviceId}`,
-      body
+      newBody
     );
   }
 

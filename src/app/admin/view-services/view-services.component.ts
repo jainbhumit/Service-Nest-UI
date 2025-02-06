@@ -19,6 +19,7 @@ export class ServicesComponent {
   paginatedServices: ProviderServiceDetail[] = [];
   filteredServices: ProviderServiceDetail[] = [];
   selectedStatus: string = '';
+  isLoading:boolean = false;
   private userService = inject(UserService);
   private authService = inject(AuthService);
   private dialog = inject(MatDialog);
@@ -32,47 +33,56 @@ export class ServicesComponent {
   itemsPerPage = 8;
   apiResponseEnd: boolean = false;
 
+
   ngOnInit(): void {
-    this.authService.isLoading.update(() => true);
+    this.isLoading = true;
     this.userService.fetchCategories().subscribe({
       next: (response) => {
         response.data.map((category) => {
           this.categories.set(category.id, category.name);
         });
-        console.log(this.categories);
+        this.selectedStatus = Array.from(this.categories.keys())[0];
+        this.onStatusChange();
+        this.isLoading = false;
       },
-      error: (err) => console.log(err.error.message),
+      error: (err) => {
+        this.isLoading = false;
+        console.log(err.error.message)
+      },
     });
-    this.loadServices();
-    this.authService.isLoading.update(() => false);
   }
 
   loadServices(): void {
+    this.isLoading = true;
+    console.log("Selected Status 1",this.selectedStatus);
     this.adminService
-      .fetchServices(this.itemsPerPage, this.currentPage)
+      .fetchServices(this.itemsPerPage, this.currentPage,this.selectedStatus)
       .subscribe({
         next: (response) => {
           if (response.message === 'No service request found') {
             console.log('No service Request Found');
-            this.paginatedServices = [];
+            this.filteredServices = [];
           } else {
-            this.paginatedServices = response.data;
-            this.applyStatusFilter();
+            this.filteredServices = response.data;
             this.apiResponseEnd = response.data.length < this.itemsPerPage;
           }
+          this.isLoading = false;
+
         },
         error: (err) => {
+          this.isLoading = false;
           console.log(err.error.message);
         },
       });
   }
 
   applyStatusFilter(): void {
-    this.filteredServices = this.selectedStatus
-      ? this.paginatedServices.filter(
-          (category) => category.category == this.selectedStatus
-        )
-      : this.paginatedServices;
+    // this.filteredServices = this.selectedStatus
+    //   ? this.paginatedServices.filter(
+    //       (category) => category.category == this.selectedStatus
+    //     )
+    //   : this.paginatedServices;
+    this.loadServices();
   }
 
   deactivateAccount(providerId: string) {
@@ -81,7 +91,7 @@ export class ServicesComponent {
     });
     dialogRef.afterClosed().subscribe((res) => {
       if (res) {
-        this.authService.isLoading.update(() => true);
+        this.isLoading = true;
         this.adminService.deactivateAccount(providerId).subscribe({
           next: (response) => {
             this.messageService.add({
@@ -89,6 +99,7 @@ export class ServicesComponent {
               summary: 'Success',
               detail: response.message,
             });
+            this.isLoading = false;
           },
           error: (err) => {
             this.messageService.add({
@@ -96,9 +107,9 @@ export class ServicesComponent {
               summary: 'Error',
               detail: err.error.message,
             });
+            this.isLoading = false;
           },
         });
-        this.authService.isLoading.update(() => false);
       }
     });
   }

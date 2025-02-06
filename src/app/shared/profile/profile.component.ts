@@ -19,6 +19,7 @@ export class ProfileComponent implements OnInit {
   private userService = inject(UserService);
   private authService = inject(AuthService);
   private messageService = inject(MessageService);
+  isLoading:boolean = false;
   update: boolean = false;
   router: Router = inject(Router);
   errorMessage: string = '';
@@ -52,7 +53,7 @@ export class ProfileComponent implements OnInit {
     ]),
   });
   ngOnInit(): void {
-    this.authService.isLoading.update(()=>true);
+    this.isLoading=true
     this.userRole = this.authService?.userRole();
     this.userService.getProfile().subscribe({
       next: (response) => {
@@ -71,12 +72,13 @@ export class ProfileComponent implements OnInit {
         this.updateForm.controls['password'].disable();
         this.updateForm.controls['address'].disable();
         this.updateForm.controls['contact'].disable();
+        this.isLoading = false;
       },
       error: (err) => {
+        this.isLoading = false;
         console.log(err.error.message);
       },
     });
-    this.authService.isLoading.update(()=>false);
   }
   UpdateProfile() {
     this.update = true;

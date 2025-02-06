@@ -33,6 +33,7 @@ export class ApproveRequestComponent {
   currentPage = 1;
   itemsPerPage = 8;
   apiResponseEnd: boolean = false;
+  isLoading: boolean = false;
 
   ngOnInit(): void {
     this.userRole = this.authService.userRole();
@@ -51,7 +52,7 @@ export class ApproveRequestComponent {
   }
 
   loadApproveRequests(): void {
-    this.authService.isLoading.update(() => true);
+    this.isLoading = true;
     if (this.userRole === Role.householder) {
       this.householderService
         .viewApprovedRequest(
@@ -68,8 +69,11 @@ export class ApproveRequestComponent {
               this.filteredRequests = response.data;
               this.apiResponseEnd = response.data.length < this.itemsPerPage;
             }
+            this.isLoading = false;
+
           },
           error: (err) => {
+            this.isLoading = false;
             console.log(err.error.message);
           },
         });
@@ -89,13 +93,15 @@ export class ApproveRequestComponent {
               this.filteredRequests = response.data;
               this.apiResponseEnd = response.data.length < this.itemsPerPage;
             }
+            this.isLoading = false;
+
           },
           error: (err) => {
+            this.isLoading = false;
             console.log(err.error.message);
           },
         });
     }
-    this.authService.isLoading.update(() => false);
   }
 
   onPageChange(newPage: number) {
@@ -110,7 +116,7 @@ export class ApproveRequestComponent {
       data: { request_id: requestId, scheduled_time: scheduleTime },
     });
   }
-  cancelRequest(requestId: string) {
+  cancelRequest(requestId: string,status:string) {
     console.log('On Cancel');
     const dialog = this.dialog.open(ConfirmCancelRequestComponentComponent, {
       width: '500px',
@@ -118,9 +124,9 @@ export class ApproveRequestComponent {
     });
     dialog.afterClosed().subscribe((response) => {
       if (response) {
-        this.authService.isLoading.update(() => true);
+        this.isLoading =true;
         if (this.userRole === Role.householder) {
-          this.householderService.cancelServiceRequest(requestId).subscribe({
+          this.householderService.cancelServiceRequest(requestId,status).subscribe({
             next: (response) => {
               if (response.message == 'Request cancelled successfully') {
                 this.messageService.add({
@@ -129,6 +135,7 @@ export class ApproveRequestComponent {
                   detail: response.message,
                 });
               }
+              this.isLoading = false;
             },
             error: (err) => {
               console.log(err);
@@ -137,10 +144,11 @@ export class ApproveRequestComponent {
                   summary: 'Not Allow',
                   detail: err.error.message,
                 });
+              this.isLoading = false;
             },
           });
         } else {
-          this.adminService.cancelServiceRequest(requestId).subscribe({
+          this.adminService.cancelServiceRequest(requestId,status).subscribe({
             next: (response) => {
               if (response.message == 'Request cancelled successfully') {
                 this.messageService.add({
@@ -148,6 +156,7 @@ export class ApproveRequestComponent {
                   summary: 'Success',
                   detail: response.message,
                 });
+              this.isLoading = false;
               }
             },
             error: (err) => {
@@ -157,10 +166,11 @@ export class ApproveRequestComponent {
                   summary: 'Not Allow',
                   detail: err.error.message,
                 });
+              this.isLoading = false;
+
             },
           });
         }
-        this.authService.isLoading.update(() => false);
       }
     });
   }
@@ -181,16 +191,28 @@ export class ApproveRequestComponent {
     this.loadApproveRequests();
   }
 
-  LeaveReview(providerId: string | undefined, serviceId: string) {
+  LeaveReview(providerId: string | undefined, serviceId: string,request_id:string) {
     const dialogRef = this.dialog.open(AddReviewFormComponent, {
       width: '450px',
-      data: { service_id: serviceId, provider_id: providerId },
+      data: { service_id: serviceId, provider_id: providerId , request_id:request_id},
     });
   }
 
   canLeaveReview(scheduledTime: string): boolean {
     const currentTime = new Date();
-    const scheduledDate = new Date(scheduledTime);
-    return currentTime > scheduledDate;
+    const scheduledDate = new Date("2025-01-31T13:00:00Z");
+    
+    const istOffset = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30
+    const currentTimeIST = new Date(currentTime.getTime() + istOffset);
+    const formattedCurrentTime = currentTimeIST.toISOString().slice(0, 19) + "Z"; 
+    const formattedScheduledDate = scheduledDate.toISOString().slice(0, 19) + "Z";
+    
+
+    if (formattedCurrentTime > formattedScheduledDate) {
+        return true;
+    } else {
+      return false;
+    }
+    
   }
 }

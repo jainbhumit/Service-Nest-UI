@@ -15,6 +15,7 @@ export class ProviderHomeComponent {
   categories: ServiceCategory[] = [];
   filteredServices: ServiceCategory[] = [];
   searchTerm: string = '';
+  isLoading: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -23,14 +24,19 @@ export class ProviderHomeComponent {
   ) {}
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.userService.fetchCategories().subscribe({
       next: (response) => {
         if (response.status === 'Success') {
           this.categories = response.data;
           this.filteredServices = this.categories;
         }
+        this.isLoading = false;
       },
-      error: (err) => console.error('Error fetching categories:', err),
+      error: (err) => {
+        console.error('Error fetching categories:', err)
+        this.isLoading = false;
+      },
     });
   }
 
@@ -53,6 +59,6 @@ export class ProviderHomeComponent {
 
   LogOut() {
     this.authService.logout();
-    this.router.navigate(['']);
+    this.router.navigate(['/login']);
   }
 }

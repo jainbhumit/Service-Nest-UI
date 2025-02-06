@@ -1,3 +1,6 @@
+@if(isLoading) {
+  <app-spinner></app-spinner>
+}
 <div class="services-container">
   <header class="services-header">
     <h1 [routerLink]="'/'+userRole?.toLowerCase()+'/home'">SERVICE NEST</h1>
@@ -40,8 +43,8 @@
           }
           @for(booking of filteredBookings;track $index) {
           <tr>
-            <td>{{booking.request_id}}</td>
-            <td>{{booking.service_id}}</td>
+            <td>{{booking.request_id | filter}}</td>
+            <td>{{booking.service_id | filter}}</td>
             <td>{{booking.service_name || 'N/A'}}</td>
             <td>{{booking.requested_time | datetime}}</td>
             <td>{{booking.scheduled_time|datetime}}</td>
@@ -53,12 +56,12 @@
             @if(booking.status!='Cancelled') {
             <td class="actions">
               <button class="btn update" pTooltip="update" tooltipPosition="top"
-                (click)="updateRequest(booking.request_id,booking.scheduled_time)">✏️</button>
+                (click)="updateRequest(booking.request_id,booking.scheduled_time,booking.status)">✏️</button>
               <button class="btn cancel" pTooltip="cancel" tooltipPosition="top"
-                (click)="cancelRequest(booking.request_id)">❌</button>
+                (click)="cancelRequest(booking.request_id,booking.status)">❌</button>
               @if (booking.status === 'Accepted') {
               <span class="arrow" pTooltip="accepted providers" tooltipPosition="top"
-                (click)="navigateToDetails(booking.provider_details!,booking.request_id)">→</span>
+                (click)="navigateToDetails(booking.provider_details!,booking.request_id,booking.status,booking.service_id)">→</span>
               }@else if(booking.status === 'Approved') {
                 <span class="arrow" pTooltip="approved request" tooltipPosition="top"
                 [routerLink]="'/householder/approve'">→</span>
@@ -74,11 +77,11 @@
     </div>
 
     <div class="pagination">
-      <button [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)" class="btn-page">
+      <button [disabled]="currentPage === 1" (click)="previousPage()" class="btn-page">
         Previous
       </button>
       <span>Page {{currentPage}}</span>
-      <button [disabled]="apiResponseEnd" (click)="onPageChange(currentPage + 1)" class="btn-page">
+      <button [disabled]="apiResponseEnd" (click)="nextPage()" class="btn-page">
         Next
       </button>
     </div>

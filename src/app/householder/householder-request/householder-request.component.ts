@@ -10,7 +10,7 @@ import { AcceptServiceDialogComponent } from '../../provider/accept-service-dial
 
 import { HouseholderService } from '../../services/householder.service';
 import { AuthService } from '../../services/auth.service';
-import { Booking, ProviderInfo } from '../../models/service.model';
+import { Booking, EvaluatedKey, ProviderInfo } from '../../models/service.model';
 import { AdminService } from '../../services/admin.service';
 
 @Component({
@@ -31,6 +31,9 @@ export class HouseholderRequestComponent implements OnInit {
   currentPage = 1;
   itemsPerPage = 8;
   apiResponseEnd: boolean = false;
+  lastEvaluatedKey: EvaluatedKey | null = null;
+  previousKeys: EvaluatedKey[] = [];
+  isLoading:boolean = false
 
   ngOnInit(): void {
     this.userRole = this.authService.userRole();
@@ -49,53 +52,66 @@ export class HouseholderRequestComponent implements OnInit {
   }
 
   loadBookings(): void {
-    this.authService.isLoading.update(() => true);
+    this.isLoading = true;
+    const encodedEvaluatedKey = this.lastEvaluatedKey ? this.lastEvaluatedKey : null
     if (this.userRole === Role.householder) {
       this.householderService
-        .fetchBookings(this.itemsPerPage, this.currentPage, this.selectedStatus)
+        .fetchBookings(this.itemsPerPage, encodedEvaluatedKey, this.selectedStatus)
         .subscribe({
           next: (response) => {
             if (response.message === 'No service request found') {
               this.filteredBookings = [];
             } else {
-              this.filteredBookings = response.data;
-              this.apiResponseEnd = response.data.length < this.itemsPerPage;
+              this.filteredBookings = response.data.serviceRequests;
+              this.lastEvaluatedKey = response.data.lastEvaluatedKey || null
+              this.apiResponseEnd = response.data.serviceRequests.length < this.itemsPerPage;
             }
+            this.isLoading = false;
           },
           error: (err) => {
+            this.isLoading = false;
             console.log(err.error.message);
           },
         });
     } else {
       this.adminService
-        .fetchBookings(this.itemsPerPage, this.currentPage, this.selectedStatus)
+        .fetchBookings(this.itemsPerPage, this.lastEvaluatedKey, this.selectedStatus)
         .subscribe({
           next: (response) => {
             if (response.message === 'No service request found') {
               this.filteredBookings = [];
             } else {
-              this.filteredBookings = response.data;
-              this.apiResponseEnd = response.data.length < this.itemsPerPage;
+              this.filteredBookings = response.data.serviceRequests;
+              this.lastEvaluatedKey = response.data.lastEvaluatedKey || null
+              this.apiResponseEnd = response.data.serviceRequests.length < this.itemsPerPage;
             }
+            this.isLoading = false;
+
           },
           error: (err) => {
+            this.isLoading = false;
             console.log(err.error.message);
           },
         });
     }
-    this.authService.isLoading.update(() => false);
   }
 
   navigateToDetails(
     providerDetails: ProviderInfo[],
-    requestId: string
+    requestId: string,
+    status:string,
+    serviceId:string
   ) {
     if ((providerDetails as []).length > 0) {
       const formatDetail: {
         request_id: string;
+        status:string;
+        service_id:string;
         provider_details: ProviderInfo[];
       } = {
         request_id: requestId,
+        status:status,
+        service_id:serviceId,
         provider_details: providerDetails as [],
       };
       this.householderService.currentAcceptRequestDetail.set(formatDetail);
@@ -112,11 +128,23 @@ export class HouseholderRequestComponent implements OnInit {
     this.currentPage = newPage;
     this.loadBookings();
   }
+  nextPage() {
+    if (this.lastEvaluatedKey) {
+      this.previousKeys.push(this.lastEvaluatedKey);
+      this.loadBookings();
+    }
+  }
 
-  updateRequest(requestId: string, scheduleTime: string) {
+  previousPage() {
+    if (this.previousKeys.length > 0) {
+      this.lastEvaluatedKey = this.previousKeys.pop() || null;
+      this.loadBookings();
+    }
+  }
+  updateRequest(requestId: string, scheduleTime: string,status:string) {
     const dialog = this.dialog.open(EditRequestDialogComponent, {
       width: '450px',
-      data: { request_id: requestId, scheduled_time: scheduleTime },
+      data: { request_id: requestId, scheduled_time: scheduleTime ,status:status},
     });
     dialog.afterClosed().subscribe({
       next: (res) => {
@@ -133,7 +161,7 @@ export class HouseholderRequestComponent implements OnInit {
       },
     });
   }
-  cancelRequest(requestId: string) {
+  cancelRequest(requestId: string,status:string) {
     console.log('On Cancel');
     const dialog = this.dialog.open(ConfirmCancelRequestComponentComponent, {
       width: '450px',
@@ -141,9 +169,9 @@ export class HouseholderRequestComponent implements OnInit {
     });
     dialog.afterClosed().subscribe((response) => {
       if (response) {
-        this.authService.isLoading.update(() => true);
+        this.isLoading = true;
         if (this.userRole === Role.householder) {
-          this.householderService.cancelServiceRequest(requestId).subscribe({
+          this.householderService.cancelServiceRequest(requestId,status).subscribe({
             next: (response) => {
               if (response.message == 'Request cancelled successfully') {
                 this.messageService.add({
@@ -156,7 +184,14 @@ export class HouseholderRequestComponent implements OnInit {
                     curr.status = 'Cancelled';
                   }
                 });
+              }else {
+                this.messageService.add({
+                  severity: 'warning',
+                  summary: 'Not Allow',
+                  detail: response.message,
+                });
               }
+              this.isLoading = false;
             },
             error: (err) => {
               console.log(err);
@@ -165,10 +200,11 @@ export class HouseholderRequestComponent implements OnInit {
                   summary: 'Not Allow',
                   detail: err.error.message,
                 });
+              this.isLoading = false;
             },
           });
         } else {
-          this.adminService.cancelServiceRequest(requestId).subscribe({
+          this.adminService.cancelServiceRequest(requestId,status).subscribe({
             next: (response) => {
               if (response.message == 'Request cancelled successfully') {
                 this.messageService.add({
@@ -182,6 +218,8 @@ export class HouseholderRequestComponent implements OnInit {
                   }
                 });
               }
+              this.isLoading = false;
+
             },
             error: (err) => {
                 this.messageService.add({
@@ -189,15 +227,18 @@ export class HouseholderRequestComponent implements OnInit {
                   summary: 'Not Allow',
                   detail: err.error.message,
                 });
+              this.isLoading = false;
+
             },
           });
         }
-        this.authService.isLoading.update(() => false);
       }
     });
   }
 
   onRefresh() {
+    this.previousKeys = [];
+    this.lastEvaluatedKey = null;
     this.loadBookings();
   }
 
@@ -209,6 +250,8 @@ export class HouseholderRequestComponent implements OnInit {
     }
   }
   onStatusChange() {
+    this.previousKeys = [];
+    this.lastEvaluatedKey = null;
     this.loadBookings();
   }
 }

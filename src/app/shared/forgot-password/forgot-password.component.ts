@@ -40,6 +40,7 @@ export class ForgotPasswordComponent {
       validators: [Validators.required],
     }),
   });
+isLoading: any;
 
   get email() {
     return this.forgotForm.get('email');

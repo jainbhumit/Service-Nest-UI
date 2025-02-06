@@ -13,6 +13,7 @@ import { Review } from '../../models/service.model';
   styleUrl: './add-review-form.component.scss',
 })
 export class AddReviewFormComponent {
+  isLoading:boolean = false;
   private messageService = inject(MessageService);
   private householderService = inject(HouseholderService);
   addReviewForm: FormGroup = new FormGroup({
@@ -26,18 +27,19 @@ export class AddReviewFormComponent {
     private authService: AuthService,
     public dialogRef: MatDialogRef<AddReviewFormComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { service_id: string; provider_id: string }
+    public data: { service_id: string; provider_id: string ,request_id:string}
   ) {}
 
   onSubmit() {
     if (this.addReviewForm.valid) {
       const body: Review = {
+        request_id:this.data.request_id,
         service_id: this.data.service_id,
         provider_id: this.data.provider_id,
         review_text: this.addReviewForm.get('comment')?.value,
         rating: this.addReviewForm.get('rating')?.value,
       };
-      this.authService.isLoading.update(() => true);
+      this.isLoading = true;
       this.householderService.addReview(body).subscribe({
         next: (response) => {
           this.messageService.add({
@@ -45,12 +47,13 @@ export class AddReviewFormComponent {
             summary: 'Success',
             detail: response.message,
           });
+          this.isLoading = false;
           this.dialogRef.close();
         },
         error: (err) => {
           if (
             err.error.message ==
-            'review already exists for this provider, service, and householder'
+            'review already exists'
           ) {
             this.messageService.add({
               severity: 'info',
@@ -59,10 +62,10 @@ export class AddReviewFormComponent {
             });
           }
           this.dialogRef.close();
+          this.isLoading = false;
           console.log(err.error.message);
         },
       });
-      this.authService.isLoading.update(() => false);
     }
   }
   onCancel() {

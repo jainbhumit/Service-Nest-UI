@@ -7,6 +7,7 @@ import { AuthService } from './services/auth.service';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  private authService = inject(AuthService)
+  private authService = inject(AuthService);
   loading = this.authService.isLoading;
+  
 }

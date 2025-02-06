@@ -74,6 +74,7 @@ describe('AddReviewFormComponent', () => {
       provider_id: '456',
       review_text: 'Great service!',
       rating: 5,
+      request_id: ''
     };
     component.addReviewForm.setValue({ comment: review.review_text, rating: review.rating });
     householderServiceMock.addReview.and.returnValue(of({ status:'success',message: 'Review added successfully!' }));

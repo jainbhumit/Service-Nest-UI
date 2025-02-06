@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
 import { SignupData } from '../../models/auth.model';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-signup',
@@ -18,6 +19,8 @@ export class SignupComponent {
   private authService = inject(AuthService);
   private router: Router = inject(Router);
   errMessage: string = '';
+  isLoading:boolean = false;
+  messageService:MessageService = inject(MessageService);
 
   signupForm: FormGroup = new FormGroup({
     username: new FormControl('', [Validators.required]),
@@ -65,17 +68,29 @@ export class SignupComponent {
         contact: this.signupForm.get('contact')?.value,
         security_answer: this.signupForm.get('securityAnswer')?.value,
       };
-      this.authService.isLoading.update(()=>true);
+      this.isLoading = true;
       this.authService.signup(user).subscribe({
         next: (response) => {
           if (response.status == 'Success') {
+            this.messageService.add({
+              severity:"success",
+              summary:"Success",
+              detail:response.message
+            })
             this.router.navigate(['/login']);
             return;
           }
         },
-        error: (err) => (this.errMessage = err.error.message),
+        error: (err) => {
+          this.messageService.add({
+            severity:"error",
+            summary:"Error",
+            detail:err.error.message
+          })
+          this.isLoading =false;
+          this.errMessage = err.error.message
+        }, 
       });
-      this.authService.isLoading.update(()=>false);
     } else {
       this.signupForm.markAllAsTouched();
     }

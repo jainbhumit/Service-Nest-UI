@@ -1,3 +1,6 @@
+@if(isLoading) {
+  <app-spinner></app-spinner>
+}
 <div class="services-container">
   <header class="services-header">
     <h1 routerLink="/admin/home">SERVICE NEST</h1>
@@ -12,7 +15,7 @@
         <option value="">All</option>
 
         @for (category of categories.keys(); track $index) {
-        <option [value]="categories.get(category)">{{categories.get(category)}}</option>
+        <option [value]="category">{{categories.get(category)}}</option>
         }
       </select>
     </div>

@@ -16,11 +16,12 @@ import { MessageService } from 'primeng/api';
 })
 export class EditRequestDialogComponent {
   scheduledTime = new FormControl('', Validators.required);
+  isLoading:boolean = false 
   constructor(
     private authService: AuthService,
     public dialogRef: MatDialogRef<EditRequestDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { request_id: string; scheduled_time: string },
+    public data: { request_id: string; scheduled_time: string ,status:string},
     private householderService: HouseholderService,
     private datePipe: DatePipe,
     private adminService: AdminService,
@@ -37,33 +38,36 @@ export class EditRequestDialogComponent {
         id: this.data.request_id,
         scheduled_time: dateTime,
       };
-      this.authService.isLoading.update(()=>true);
+      this.isLoading = true;
       if (this.authService.userRole() === Role.householder) {
-        this.householderService.updateServiceRequest(body).subscribe({
+        this.householderService.updateServiceRequest(body,this.data.status).subscribe({
           next: (response) => {
             console.log('update request successfully');
             this.dialogRef.close(body.scheduled_time);
+            this.isLoading = false;
           },
           error: (err) => {
             if(err.error.message=='only pending request rescheduled') {
               this.messageService.add({severity:'error',summary:'Failed',detail:'only pending and accepted request reschedule'})
             }
+            this.isLoading = false;
             this.dialogRef.close();
           },
         });
       } else {
-        this.adminService.updateServiceRequest(body).subscribe({
+        this.adminService.updateServiceRequest(body,this.data.status).subscribe({
           next: (response) => {
             console.log('update request successfully');
             this.dialogRef.close(body.scheduled_time);
+            this.isLoading = false;
           },
           error: (err) => {
             console.log(err.error.message);
             this.dialogRef.close();
+            this.isLoading = false;
           },
         });
       }
-      this.authService.isLoading.update(()=>false);
     } else {
       this.dialogRef.close(false);
     }

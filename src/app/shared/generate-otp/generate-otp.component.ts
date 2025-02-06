@@ -12,6 +12,7 @@ import { MessageService } from 'primeng/api';
 })
 export class GenerateOtpComponent {
   onGenerate = output<{ email: string; status: boolean }>();
+isLoading: any;
 
   constructor(
     private authService: AuthService,

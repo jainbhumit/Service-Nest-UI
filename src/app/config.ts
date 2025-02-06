@@ -4,7 +4,9 @@ export enum Role {
   householder = 'Householder',
   serviceProvider = 'ServiceProvider',
 }
-export const BaseUrl = 'http://localhost:8080';
+
+// https://1fh0244il4.execute-api.us-east-1.amazonaws.com/Prod
+export const BaseUrl = 'https://1fh0244il4.execute-api.us-east-1.amazonaws.com/Prod';
 export const ApiUrlWithUser = '/api/user';
 export const ApiUrlWithProvider = '/api/provider';
 export const ApiUrlWithAdmin = '/api/admin';

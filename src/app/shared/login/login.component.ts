@@ -49,11 +49,12 @@ export class LoginComponent {
 
   Login() {
     if (this.loginForm.valid) {
+      this.isLoading = true;
       const loginData: LoginData = {
         email: this.email?.value as string,
         password: this.password?.value as string,
       };
-      this.authService.isLoading.update(()=>true);
+
       this.authService.login(loginData).subscribe({
         next: (response) => {
           const token = response.data.token;
@@ -82,12 +83,12 @@ export class LoginComponent {
         error: (error) => {
           console.log(error);
           this.errorMessage = error.error.message;
+          this.isLoading = false
         },
       });
-      this.authService.isLoading.update(()=>false);
     } else {
       this.loginForm.markAllAsTouched();
     }
-    this.isLoading = false
+    
   }
 }

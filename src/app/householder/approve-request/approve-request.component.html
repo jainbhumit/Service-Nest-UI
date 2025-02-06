@@ -1,3 +1,6 @@
+@if(isLoading) {
+  <app-spinner></app-spinner>
+}
 <div class="services-container">
   <header class="services-header">
     <h1 [routerLink]="'/'+userRole?.toLowerCase()+'/home'">SERVICE NEST</h1>
@@ -52,11 +55,11 @@
             @if(request.status!='Cancelled') {
             <td class="actions">
               <button class="btn cancel" pTooltip="cancel" tooltipPosition="top"
-                (click)="cancelRequest(request.request_id)">❌</button>
+                (click)="cancelRequest(request.request_id,request.status)">❌</button>
 
               @if (userRole==="Householder" && canLeaveReview(request.scheduled_time)) {
               <span class="arrow" pTooltip=" add review" tooltipPosition="top"
-                (click)="LeaveReview((request.provider_details && request.provider_details[0] )?.service_provider_id,request.service_id)">💬</span>
+                (click)="LeaveReview((request.provider_details && request.provider_details[0] )?.service_provider_id,request.service_id,request.request_id)">💬</span>
               }
 
             </td>

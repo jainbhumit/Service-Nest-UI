@@ -15,6 +15,260 @@
   align-items: center;
   padding: 1rem 2rem;
   background-color: #f5f5f5;
+  position: relative;
+  top: 0;
+  z-index: 100;
+  height: 70px;
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+    color: #333;
+    min-width: 180px;
+    white-space: nowrap;
+  }
+
+  .explore-btn {
+    position: absolute;
+    right: 3rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #703726;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: auto;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: #511f10;
+    }
+  }
+
+  .back-btn {
+    position: absolute;
+    left: 3rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #703726;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-weight: bolder;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: auto;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: #511f10;
+    }
+  }
+}
+
+.request-service-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e8e1e1;
+  padding: 1rem;
+  font-family: Arial, sans-serif;
+}
+
+.request-service-box {
+  background-color: #f5f5f5;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 0 20px rgb(252, 252, 252);
+  padding: 2rem;
+}
+
+.request-service-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dialog-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.form-group {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+// Material Form Field Styles
+::ng-deep {
+  .mat-form-field {
+    width: 100%;
+    margin-bottom: 1rem;
+    
+    .mat-form-field-wrapper {
+      padding-bottom: 0;
+    }
+
+    .mat-form-field-flex {
+      background-color: #ffffff;
+      padding: 0.75rem 0.5rem !important;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    .mat-form-field-underline {
+      display: none;
+    }
+
+    .mat-form-field-label {
+      color: #666;
+      font-weight: 500;
+    }
+
+    .mat-form-field-infix {
+      padding: 0.5rem 0;
+      border-top: 0;
+    }
+
+    &.mat-focused {
+      .mat-form-field-flex {
+        border-color: #703726;
+      }
+      
+      .mat-form-field-label {
+        color: #703726;
+      }
+    }
+  }
+
+  // Input specific styles
+  .mat-input-element {
+    color: #333;
+    
+    &::placeholder {
+      color: #999;
+    }
+  }
+
+  // Icon styles
+  .mat-icon {
+    color: #703726;
+  }
+}
+
+.image-upload-container {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  .upload-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #703726;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+
+    &:hover {
+      background-color: #511f10;
+    }
+  }
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem;
+  margin-top: 2rem;
+
+  button {
+    flex: 1;
+    padding: 12px;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &.submit-button {
+      background-color: #703726;
+      
+      &:hover {
+        background-color: #511f10;
+      }
+    }
+
+    &.cancel-button {
+      background-color: #703726;
+      
+      &:hover {
+        background-color: #511f10;
+      }
+    }
+
+    &:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .dialog-title {
+    font-size: 1.5rem;
+  }
+
+  .dialog-actions button {
+    padding: 10px;
+  }
+
+  .services-header {
+    padding: 1rem;
+
+    .explore-btn, .back-btn {
+      padding: 0.5rem 1rem;
+    }
+  }
+
+  .request-service-box {
+    padding: 1.5rem;
+  }
+}
+.services-container {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  position: relative;
+  font-family: Arial, sans-serif;
+}
+
+.services-header {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #f5f5f5;
   // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: relative;
   top: 0;

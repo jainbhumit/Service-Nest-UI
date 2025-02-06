@@ -27,23 +27,28 @@ export class ProviderViewRequestComponent {
   apiResponseEnd: boolean = false;
   selectedStatus: string = '';
   categories = new Map<string, string>();
+  isLoading: boolean =false;
 
   ngOnInit(): void {
-    this.authService.isLoading.update(() => true)
+    this.isLoading = true;
     this.userService.fetchCategories().subscribe({
       next: (response) => {
         response.data.map((category) => {
           this.categories.set(category.id, category.name);
         });
         console.log(this.categories);
+        this.isLoading = false
       },
-      error: (err) => console.log(err.error.message),
+      error: (err) => {
+        console.log(err.error.message)
+        this.isLoading = false;
+      },
     });
     this.loadRequests();
-    this.authService.isLoading.update(() => false)
   }
 
   loadRequests(): void {
+    this.isLoading = true;
     this.providerService
       .viewServiceRequest(this.itemsPerPage, this.currentPage,this.selectedStatus)
       .subscribe({
@@ -56,8 +61,11 @@ export class ProviderViewRequestComponent {
             this.paginatedRequest = response.data;
             this.apiResponseEnd = response.data.length < this.itemsPerPage;
           }
+         this.isLoading = false;
+
         },
         error: (err) => {
+         this.isLoading = false;
           console.log(err.error.message);
         },
       });
@@ -69,10 +77,10 @@ export class ProviderViewRequestComponent {
     this.loadRequests();
   }
 
-  acceptRequest(requestId: string) {
+  acceptRequest(requestId: string,service_id:string,status:string) {
     const dialogRef = this.dialog.open(AcceptServiceDialogComponent, {
       width: '450px',
-      data: { request_id: requestId },
+      data: { request_id: requestId , service_id:service_id,status:status},
     });
 
     dialogRef.afterClosed().subscribe({

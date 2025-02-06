@@ -24,6 +24,7 @@ export class HouseholderHomeComponent {
   searchTerm: string = '';
   role: string | undefined;
   private dialog = inject(MatDialog);
+  isLoading: boolean = false;
   constructor(
     private authService: AuthService,
     private householderService: HouseholderService,
@@ -34,21 +35,24 @@ export class HouseholderHomeComponent {
   ) {}
 
   ngOnInit(): void {
-    this.authService.isLoading.update(()=>true);
+    this.authService.isLoading.set(true);
     this.role = this.authService.userRole();
     this.fetchCategories()
-    this.authService.isLoading.update(()=>false);
   }
 
   fetchCategories() {
+    this.isLoading = true;
     this.userService.fetchCategories().subscribe({
       next: (response) => {
         if (response.status === 'Success') {
           this.categories = response.data;
           this.filteredServices = this.categories;
         }
+        this.isLoading = false;
       },
-      error: (err) => console.error('Error fetching categories:', err),
+      error: (err) => {
+        this.isLoading = false;
+      },
     });
   }
   filterServices(): void {
@@ -76,7 +80,7 @@ export class HouseholderHomeComponent {
     });
     dialog.afterClosed().subscribe((res) => {
       if (res) {
-        this.authService.isLoading.update(()=>true);
+        this.isLoading = true
         this.adminService.deleteService(categoryId).subscribe({
           next: (response) => {
             if (response.message == 'Service deleted successfully') {
@@ -89,6 +93,7 @@ export class HouseholderHomeComponent {
                 (category) => category.id != categoryId
               );
             }
+            this.isLoading = false;
           },
           error: (err) => {
             this.messageService.add({
@@ -96,10 +101,10 @@ export class HouseholderHomeComponent {
               summary: 'Error',
               detail: err.error.message,
             });
+            this.isLoading = false;
           },
         });
         this.fetchCategories();
-        this.authService.isLoading.update(()=>false);
       }
     });
   }

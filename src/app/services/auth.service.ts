@@ -16,7 +16,7 @@ import {
 export class AuthService {
   private apiUrl = BaseUrl;
   userRole = signal<Role | undefined>(undefined);
-  isLoading = signal(false); 
+  isLoading = signal(false);
   isOtpSent:boolean =false;
   constructor(private http: HttpClient) {}
 

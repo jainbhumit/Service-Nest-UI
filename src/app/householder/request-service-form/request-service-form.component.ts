@@ -20,6 +20,7 @@ export class RequestServiceFormComponent {
   requestServiceForm: FormGroup;
   datePipe = inject(DatePipe);
   userRole: Role | undefined = this.authService.userRole();
+  isLoading:boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -27,7 +28,7 @@ export class RequestServiceFormComponent {
     private householderService: HouseholderService,
     private adminService: AdminService,
     private messageService: MessageService,
-    @Inject(MAT_DIALOG_DATA) public data: { category: string; user_id: string },
+    @Inject(MAT_DIALOG_DATA) public data: { category: string; user_id: string , category_id:string},
     private authService: AuthService
   ) {
     this.requestServiceForm = this.fb.group({
@@ -55,8 +56,9 @@ export class RequestServiceFormComponent {
         category: this.requestServiceForm.controls['category'].value,
         description: this.requestServiceForm.controls['description'].value,
         scheduled_time: formattedDateTime as string,
+        category_id: this.data.category_id
       };
-      this.authService.isLoading.update(()=>true);
+      this.isLoading = true;
       if (this.userRole === 'Householder') {
         this.householderService.requestService(requestData).subscribe({
           next: (response) => {
@@ -65,9 +67,11 @@ export class RequestServiceFormComponent {
               summary: 'Success',
               detail: 'Request successfully',
             });
+            this.isLoading = false;
             this.dialogRef.close();
           },
           error: (err) => {
+            this.isLoading = false;
             console.log(err.error.message);
             this.dialogRef.close();
           },
@@ -80,15 +84,16 @@ export class RequestServiceFormComponent {
               summary: 'Success',
               detail: 'Request successfully',
             });
+            this.isLoading = false;
             this.dialogRef.close();
           },
           error: (err) => {
+            this.isLoading = false;
             console.log(err.error.message);
             this.dialogRef.close();
           },
         });
       }
-      this.authService.isLoading.update(()=>false);
     }
   }
 

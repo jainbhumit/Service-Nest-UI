@@ -28,26 +28,32 @@ export class ProviderReviewComponent {
   currentPage = 1;
   itemsPerPage = 8;
   apiResponseEnd: boolean = false;
+  isLoading: boolean = false;
 
   ngOnInit(): void {
-    this.authService.isLoading.update(() => true)
+    this.isLoading = true;
+
     this.userService.fetchCategories().subscribe({
       next: (response) => {
         response.data.map((category) => {
           this.categories.set(category.id, category.name);
         });
         console.log(this.categories);
+        this.isLoading = false;
       },
-      error: (err) => console.log(err.error.message),
+      error: (err) => {
+        console.log(err.error.message);
+        this.isLoading = false;
+      },
     });
     this.loadReview();
-    this.authService.isLoading.update(() => false)
+    this.authService.isLoading.update(() => false);
   }
 
   loadReview(): void {
-    this.authService.isLoading.update(()=>true)
+    this.isLoading = true;
     this.providerService
-      .getReview(this.itemsPerPage, this.currentPage,this.selectedStatus)
+      .getReview(this.itemsPerPage, this.currentPage, this.selectedStatus)
       .subscribe({
         next: (response) => {
           if (
@@ -59,15 +65,16 @@ export class ProviderReviewComponent {
             this.filteredReview = response.data;
             this.apiResponseEnd = response.data.length < this.itemsPerPage;
           }
+          this.isLoading = false;
         },
         error: (err) => {
-          if(err.error.message=='no reviews found') {
+          if (err.error.message == 'no reviews found') {
             this.filteredReview = [];
           }
           console.log(err.error.message);
+          this.isLoading = false;
         },
       });
-      this.authService.isLoading.update(() => false)
   }
 
   onPageChange(newPage: number) {
@@ -85,6 +92,6 @@ export class ProviderReviewComponent {
   }
 
   onRefresh() {
-    this.loadReview()
+    this.loadReview();
   }
 }

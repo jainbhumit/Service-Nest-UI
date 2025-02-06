@@ -17,11 +17,13 @@ import {
 })
 export class AddServiceFormComponent implements OnInit {
   isUpdate: boolean = false;
+  isLoading: boolean = false;
   constructor(
     private providerService: ProviderService,
     private dialogRef: MatDialogRef<RequestServiceFormComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: {
+      category_id:string
       category: string;
       is_update: boolean;
       service_detail: ProviderServiceDetail;
@@ -59,15 +61,19 @@ export class AddServiceFormComponent implements OnInit {
         description: this.addServiceForm.get('description')?.value,
         price: this.addServiceForm.get('price')?.value,
         category: this.addServiceForm.get('category')?.value,
+        service_id:this.data.category_id
       };
+      this.isLoading = true;
       if (this.isUpdate) {
         this.providerService
           .updateService(body, this.data.service_detail.id)
           .subscribe({
             next: (response) => {
+              this.isLoading = false;
               this.dialogRef.close(true);
             },
             error: (err) => {
+              this.isLoading = false;
               this.dialogRef.close(false);
             },
           });
@@ -76,10 +82,12 @@ export class AddServiceFormComponent implements OnInit {
           next: (response) => {
             console.log(body);
             console.log('add service response : ', response);
+            this.isLoading = false;
             this.dialogRef.close(true);
           },
           error: (err) => {
             console.log(err.error.message);
+            this.isLoading = false;
             this.dialogRef.close(false);
           },
         });

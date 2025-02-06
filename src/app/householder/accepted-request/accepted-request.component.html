@@ -1,3 +1,6 @@
+@if(isLoading) {
+  <app-spinner></app-spinner>
+}
 <div class="services-container">
   <header class="services-header">
     <h1 [routerLink]="'/'+userRole?.toLowerCase()+'/home'">SERVICE NEST</h1>

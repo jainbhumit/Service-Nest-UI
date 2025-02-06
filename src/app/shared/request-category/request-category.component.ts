@@ -28,6 +28,7 @@ export class RequestCategoryComponent implements OnInit {
     name: '',
     id: '',
     description: '',
+    imageUrl: ''
   };
   isLoading: boolean = false;
   isServiceAdded: boolean = false;
@@ -48,12 +49,12 @@ export class RequestCategoryComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.authService.isLoading.update(() => true);
+    this.isLoading = true
     this.userRole = this.authService?.userRole();
     this.currentService = this.userService.currentService();
     if (this.userRole === Role.householder || this.userRole === Role.admin) {
       this.householderService
-        .getServiceByCategory(this.currentService.name)
+        .getServiceByCategory(this.currentService.id)
         .subscribe({
           next: (response) => {
             if (response.data && response.data.length > 0) {
@@ -69,22 +70,23 @@ export class RequestCategoryComponent implements OnInit {
                   return (acc += curr.price);
                 }, 0) / response.data.length;
             }
+          this.isLoading = false;
           },
           error: (err) => {
             console.log(err.error.message);
+            this.isLoading = false;
+
           },
         });
     } else if (this.userRole === 'ServiceProvider') {
       this.loadProviderService();
     }
-    this.authService.isLoading.update(() => false);
   }
 
   getServiceImg(serviceName: string): string {
     return GetServiceImage(serviceName);
   }
   loadProviderService() {
-    this.authService.isLoading.update(() => true);
     this.providerService.getProviderService().subscribe({
       next: (response) => {
         if (response.data) {
@@ -96,9 +98,9 @@ export class RequestCategoryComponent implements OnInit {
           this.serviceDetail = response.data;
           this.providerService.serviceDetail = this.serviceDetail;
         }
+        this.isLoading = false;
       },
     });
-    this.authService.isLoading.update(() => false);
   }
   selectCategory(category: string) {
     this.router.navigate(['/services'], {
@@ -114,14 +116,14 @@ export class RequestCategoryComponent implements OnInit {
         if (res) {
           const dialogRef = this.dialog.open(RequestServiceFormComponent, {
             width: '450px',
-            data: { category: this.currentService.name },
+            data: { category: this.currentService.name , category_id: this.currentService.id},
           });
         }
       });
     } else {
       const dialogRef = this.dialog.open(RequestServiceFormComponent, {
         width: '450px',
-        data: { category: this.currentService.name },
+        data: { category: this.currentService.name , category_id: this.currentService.id},
       });
     }
   }
@@ -147,7 +149,7 @@ export class RequestCategoryComponent implements OnInit {
     }
     const dialog = this.dialog.open(AddServiceFormComponent, {
       width: '450px',
-      data: { category: this.currentService.name, is_update: false },
+      data: { category: this.currentService.name, is_update: false,category_id:this.currentService.id },
     });
     dialog.afterClosed().subscribe({
       next: (res) => {
@@ -192,8 +194,8 @@ export class RequestCategoryComponent implements OnInit {
     });
     dialog.afterClosed().subscribe({
       next: (res) => {
+        this.isLoading = true;
         if (res) {
-          this.authService.isLoading.update(() => true);
           this.providerService.deleteService(serviceId).subscribe({
             next: (response) => {
               this.loadProviderService();
@@ -202,6 +204,7 @@ export class RequestCategoryComponent implements OnInit {
                 summary: 'Success',
                 detail: 'Service cancel Succesfully',
               });
+              this.isLoading = false;
             },
             error: (err) => {
               this.messageService.add({
@@ -209,9 +212,9 @@ export class RequestCategoryComponent implements OnInit {
                 summary: 'Error',
                 detail: 'Error cancelling service',
               });
+              this.isLoading = false;
             },
           });
-          this.authService.isLoading.update(() => false);
         }
       },
     });

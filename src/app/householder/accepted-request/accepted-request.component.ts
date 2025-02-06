@@ -30,6 +30,7 @@ export class AcceptedRequestComponent implements OnInit {
   currentPage: number = 1;
   itemPerPage: number = 8;
   totalCount: number = 0;
+  isLoading:boolean = false;
 
   ngOnInit(): void {
     this.userRole = this.authService.userRole();
@@ -37,15 +38,17 @@ export class AcceptedRequestComponent implements OnInit {
       .provider_details;
     this.totalCount =
       this.householderService.currentAcceptRequestDetail().provider_details.length;
-    this.authService.isLoading.update(() => true);
+    
     this.applyPagination();
-    this.authService.isLoading.update(() => false);
+ 
   }
 
   applyPagination() {
+    this.isLoading = true;
     const start = (this.currentPage - 1) * this.itemPerPage;
     const end = start + this.itemPerPage;
     this.filteredProviderDetail = this.providerDetail?.slice(start, end);
+    this.isLoading = false
     this.apiResponseEnd = end >= this.totalCount;
   }
   onPageChange(newPage: number) {
@@ -55,12 +58,13 @@ export class AcceptedRequestComponent implements OnInit {
     this.applyPagination();
   }
   approveRequest(providerId: string) {
-    const body: { request_id: string; provider_id: string } = {
-      request_id:
-        this.householderService.currentAcceptRequestDetail().request_id,
+    const body: { request_id: string; provider_id: string,service_id:string; status:string } = {
+      request_id: this.householderService.currentAcceptRequestDetail().request_id,
       provider_id: providerId,
+      service_id: this.householderService.currentAcceptRequestDetail().service_id,
+      status: this.householderService.currentAcceptRequestDetail().status
     };
-    this.authService.isLoading.update(() => true);
+    this.isLoading = true;
     if (this.userRole === Role.householder) {
       this.householderService.approveRequest(body).subscribe({
         next: (response) => {
@@ -69,6 +73,7 @@ export class AcceptedRequestComponent implements OnInit {
             summary: 'Success',
             detail: response.message,
           });
+          this.isLoading = false;
         },
         error: (err) => {
           this.messageService.add({
@@ -76,6 +81,8 @@ export class AcceptedRequestComponent implements OnInit {
             summary: 'Error',
             detail: err.error.message,
           });
+          this.isLoading = false;
+
         },
       });
     } else {
@@ -86,6 +93,8 @@ export class AcceptedRequestComponent implements OnInit {
             summary: 'Success',
             detail: response.message,
           });
+          this.isLoading = false;
+
         },
         error: (err) => {
           this.messageService.add({
@@ -93,10 +102,11 @@ export class AcceptedRequestComponent implements OnInit {
             summary: 'Error',
             detail: err.error.message,
           });
+          this.isLoading = false;
+
         },
       });
     }
-    this.authService.isLoading.update(() => false);
     this.location.back();
   }
 

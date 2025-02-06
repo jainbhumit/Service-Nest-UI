@@ -1,5 +1,7 @@
+@if(isLoading) {
+  <app-spinner></app-spinner>
+}
 <div class="services-container">
-
   <header class="services-header">
     @if(userRole==='ServiceProvider') {
       <h1 [routerLink]="'/provider/home'">SERVICE NEST</h1>
@@ -26,7 +28,7 @@
   <div class="main-content">
     <div class="service-details">
       <div class="service-card">
-        <img [src]="getServiceImg(currentService.name)" alt="House Cleaning">
+        <img [src]="currentService.imageUrl" alt="House Cleaning">
         <h2>{{currentService.name || 'HOUSE CLEANING'}}</h2>
       </div>
 
@@ -57,7 +59,7 @@
         </p>
       </div>
 
-      @if (userRole==='Householder') {
+      @if (userRole==='Householder' || userRole==="Admin") {
       <div class="other-categories">
         <h3>PROVIDERS</h3>
         <div class="category-grid">
