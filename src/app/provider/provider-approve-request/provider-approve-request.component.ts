@@ -36,7 +36,7 @@ export class ProviderApproveRequestComponent {
       .subscribe({
         next: (response) => {
           if (
-            response.status == 'Fail' &&
+            response.status == 'Success' &&
             response.message === 'no approved requests found for this provider'
           ) {
             this.approveRequests = [];
